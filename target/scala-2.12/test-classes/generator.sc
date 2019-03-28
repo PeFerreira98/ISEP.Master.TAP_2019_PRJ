@@ -18,7 +18,3 @@ val genAccount = for (
 
 genAccount.sample
 
-// testing stuff
-val source = Source.fromFile("C:\\Users\\rmvieira\\Documents\\TAP\\1140953_1140956_1141233_a_2019_tap_ncf\\SentiWordNet_3.0.0_20130122.txt").getLines
-  val contentList = source.toList
-

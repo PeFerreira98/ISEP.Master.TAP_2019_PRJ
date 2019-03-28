@@ -1,4 +1,4 @@
-name := "nurses"
+name := "warmUp"
 
 version := "0.1"
 
