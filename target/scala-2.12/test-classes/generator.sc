@@ -1,5 +1,7 @@
 import org.scalacheck.Gen
 
+import scala.io.Source
+
 val g1 = Gen.oneOf( 1, 2, 3)
 val g2 = Gen.alphaStr
 
@@ -16,10 +18,7 @@ val genAccount = for (
 
 genAccount.sample
 
+// testing stuff
+val source = Source.fromFile("C:\\Users\\rmvieira\\Documents\\TAP\\1140953_1140956_1141233_a_2019_tap_ncf\\SentiWordNet_3.0.0_20130122.txt").getLines
+  val contentList = source.toList
 
-val tupleGen = for (
-  n1 <- Gen.chooseNum[Int](1,5) ;
-  n2 <- Gen.chooseNum[Int](1,5) ;
-) yield (n1,n2)
-
-tupleGen.sample

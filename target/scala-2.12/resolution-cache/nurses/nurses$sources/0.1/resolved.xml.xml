@@ -4,7 +4,7 @@
 		module="nurses$sources"
 		revision="0.1"
 		status="integration"
-		publication="20190326230511"
+		publication="20190327223147"
 	/>
 	<configurations>
 		<conf name="compile" visibility="public" description=""/>

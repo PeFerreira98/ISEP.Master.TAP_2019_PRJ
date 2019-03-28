@@ -1,11 +1,13 @@
 package controller
 
-import domain.{Nurse, NurseRequirement, Shift}
 
-object ScheduleController {
+/*
+import domain.{Entry}
+
+object PolarityDetectionController {
 
   // the scheduler
-  val scheduler: (List[Nurse], List[NurseRequirement]) => Option[List[Shift]] = naiveScheduler
+  val detectPolarity: (List[Nurse], List[NurseRequirement]) => Option[List[Shift]] = naiveScheduler
 
   // Returns the a list of nurses which fulfills the requirement
   def nursesForSchedule(ln: List[Nurse], s: NurseRequirement): Option[List[Nurse]] = {
@@ -26,3 +28,4 @@ object ScheduleController {
     ll.map { case (ls, _) => ls }
   }
 }
+*/

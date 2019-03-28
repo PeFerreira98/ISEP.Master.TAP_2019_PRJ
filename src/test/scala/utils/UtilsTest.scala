@@ -1,6 +1,6 @@
-package maths
+package utils
 
-import maths.Utils.{factorial, isPrime}
+import utils.Utils.{factorial, isPrime}
 import org.scalacheck.Properties
 import org.scalacheck.Prop.forAll
 import org.scalacheck.Gen

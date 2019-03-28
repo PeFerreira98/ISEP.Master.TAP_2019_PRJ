@@ -1,5 +1,7 @@
 import org.scalacheck.Gen
 
+import scala.io.Source
+
 val g1 = Gen.oneOf( 1, 2, 3)
 val g2 = Gen.alphaStr
 
@@ -16,10 +18,3 @@ val genAccount = for (
 
 genAccount.sample
 
-
-val tupleGen = for (
-  n1 <- Gen.chooseNum[Int](1,5) ;
-  n2 <- Gen.chooseNum[Int](1,5) ;
-) yield (n1,n2)
-
-tupleGen.sample
