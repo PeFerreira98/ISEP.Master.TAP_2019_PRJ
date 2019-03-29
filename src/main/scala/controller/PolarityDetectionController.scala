@@ -1,31 +1,42 @@
 package controller
 
-
-/*
+import scala.io.Source
 import domain.{Entry}
 
 object PolarityDetectionController {
 
-  // the scheduler
-  val detectPolarity: (List[Nurse], List[NurseRequirement]) => Option[List[Shift]] = naiveScheduler
+  // the polarity detector
+  val detectPolarity: (String, Stream[Entry]) => Boolean = detectPolarityStuff
 
-  // Returns the a list of nurses which fulfills the requirement
-  def nursesForSchedule(ln: List[Nurse], s: NurseRequirement): Option[List[Nurse]] = {
-    val lns = ln.filter(_.roles.contains(s.role)).take(s.number)
-    if (lns.size == s.number) Some(lns) else None
+  //val detectPolarity: String => Boolean = detectPolarityStuff
+  private def detectPolarityStuff(phrase: String, entries: Stream[Entry]): Boolean = {
+    // TODO: add functionality here!!!
+    true
   }
 
-  // Schedules in a naive way
-  private def naiveScheduler(ln: List[Nurse], ls: List[NurseRequirement]): Option[List[Shift]] = {
-    val ll = ls.foldLeft[Option[(List[Shift], List[Nurse])]](Some(List(), ln)) {
-      case (ss, s) =>
-        // scala for-yield format (syntactic sugar)
-        for (
-          (ls, ln) <- ss;
-          lns <- nursesForSchedule(ln, s)
-        ) yield (lns.map(n => Shift(n.name, s.role)), ln.diff(lns))
-    }
-    ll.map { case (ls, _) => ls }
+  // Loads and parses all the entries in the SentiWordNet file
+  // returns: a list of the parsed entries
+  def loadEntries(): Stream[Entry] = {
+    parseEntries(readFromFile())
+  }
+
+  // Gets the lines from SentiWordNet file
+  private def readFromFile(): Stream[String] = {
+    val fileName = "C:\\Users\\rmvieira\\Documents\\TAP\\1140953_1140956_1141233_a_2019_tap_ncf\\SentiWordNet_3.0.0_20130122.txt"
+    Source.fromFile(fileName).getLines.toStream
+  }
+
+  // Parses the raw file lines
+  // returns: a list of the parsed entries
+  private def parseEntries(lines:Stream[String]): Stream[Entry] = {
+    for (line
+           <-
+           lines.filter(_.startsWith("a"))
+             .map(_.split("\t")
+               .map(_.trim)))
+      yield Entry(
+        line(4).substring(0, line(4).indexOf("#")),
+        line(2).toDouble,
+        line(3).toDouble)
   }
 }
-*/

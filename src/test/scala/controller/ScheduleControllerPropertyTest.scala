@@ -6,6 +6,7 @@ import org.scalacheck.Prop.forAll
 
 object ScheduleControllerPropertyTest extends Properties("ScheduleController") {
 
+  /*
   // TODO: Create a Nurse generator
   // TODO: the names must have 5 characters
   // TODO: the roles must be a non empty container of the available roles
@@ -61,5 +62,5 @@ object ScheduleControllerPropertyTest extends Properties("ScheduleController") {
   // TODO: afterwards, the requirements are permutated to increase the coverage
   property("requirements from nurses permuted and aggregated") =
     ???
-
+*/
 }

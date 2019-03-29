@@ -2,6 +2,9 @@
 .idea/
 .vscode/
 
+# Target folders
+*/target/*
+
 # Compiled class file
 *.class
 
