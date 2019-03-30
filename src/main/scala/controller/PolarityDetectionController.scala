@@ -26,7 +26,9 @@ object PolarityDetectionController {
 
   // cleans the text from special characters and splits it into a list of words
   private def textCleanupAndSplit(text: String) : List[String] = {
-
+    text.replaceAll("[^a-zA-z]", " ")
+      .replaceAll(" {2,}", " ")
+      .split(" ").map(_.trim).toList
   }
 
   // Loads and parses all the entries in the SentiWordNet file
