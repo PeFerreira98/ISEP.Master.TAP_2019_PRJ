@@ -1,19 +1,15 @@
 import domain.Entry
 
-val input = "Scala é mau. O que nós gostamos é... .NET!"
+import scala.io.Source
 
-/*Será que se matém o "'"? (isn't)*/
-def removeSpecialChars(input:String) : Array[String] ={
-  val res = input.replaceAll("[^a-zA-z]", " ").replaceAll(" {2,}", " ")
+def removeSpecialChars(input:String) : List[String] ={
+  val res = input.replaceAll("[^a-zA-z ]", "").replaceAll(" {2,}", " ")
 
-  res.split(" ").map(_.trim)
+  res.split(" ").map(_.trim).toList
 }
 
-removeSpecialChars("Tap is    bad!!! but at least is not ALGAV :D")
+removeSpecialChars("Tap isn't  .  bad!!! but at least is not ALGAV :D")
 
-/*
-def findPolarity(arr_entry : Stream[Entry], arr_input : Array[String]) : Double = {
-  val res: Double = 0
-  for()
-}
-*/
+// TODO: Houston we have a problem... -> ^ \ [ ] chars get through
+val inputX = "aA09 <> ,;.:-_ ~^ºª !\"#$%&/\\|()=?' «»€@£§{[]}"
+removeSpecialChars(inputX)
