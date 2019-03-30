@@ -7,8 +7,9 @@ object PolarityDetectionController {
 
   // the polarity detector
   val detectPolarity: (String, Stream[Entry]) => String = detectPolarityPriv
+
   // the entries loader
-  val loadEntries : () => Stream[Entry] = loadEntriesPriv
+  val loadEntries : (String) => Stream[Entry] = loadEntriesPriv
 
 
   private def detectPolarityPriv(phrase: String, entries: Stream[Entry]): String = {
@@ -57,15 +58,13 @@ object PolarityDetectionController {
 
   // Loads and parses all the entries in the SentiWordNet file
   // returns: a list of the parsed entries
-  private def loadEntriesPriv(): Stream[Entry] = {
-    parseEntries(readFromFile())
+  private def loadEntriesPriv(filePath: String): Stream[Entry] = {
+    parseEntries(readFromFile(filePath))
   }
 
   // Gets the lines from SentiWordNet file
-  private def readFromFile(): Stream[String] = {
-    val fileName = "C:\\Users\\rmvieira\\Documents\\TAP\\1140953_1140956_1141233_a_2019_tap_ncf\\resources\\SentiWordNet_3.0.0_20130122.txt"
-    Source.fromFile(fileName)
-      .getLines.toStream
+  private def readFromFile(filePath : String): Stream[String] = {
+    Source.fromFile(filePath).getLines.toStream
   }
 
   // Parses the raw file lines

@@ -1,6 +1,7 @@
 import domain.Entry
 import controller.PolarityDetectionController
-
+import controller.PolarityDetectionController.detectPolarity
+import controller.PolarityDetectionController.loadEntries
 import scala.io.Source
 
 // Prototype functions
@@ -59,16 +60,16 @@ def parseEntries(lines:List[String]): List[Entry] = {
 }
 
 // Gets the lines from SentiWordNet file
-def readFromFile(): List[String] = {
-  val fileName = "C:\\Users\\rmvieira\\Documents\\TAP\\1140953_1140956_1141233_a_2019_tap_ncf\\resources\\SentiWordNet_3.0.0_20130122.txt"
-  Source.fromFile(fileName)
-    .getLines.toList
+def readFromFile(fileName: String): List[String] = {
+  Source.fromFile(fileName).getLines.toList
 }
 
 // Loads and parses all the entries in the SentiWordNet file
 // returns: a list of the parsed entries
  def loadEntries(): List[Entry] = {
-  parseEntries(readFromFile())
+  //val fileName = "C:\\Users\\rmvieira\\Documents\\TAP\\1140953_1140956_1141233_a_2019_tap_ncf\\resources\\SentiWordNet_3.0.0_20130122.txt"
+  val fileName = "C:\\Users\\pefer\\Desktop\\TAP\\1140953_1140956_1141233_a_2019_tap_ncf\\resources\\SentiWordNet_3.0.0_20130122.txt"
+  parseEntries(readFromFile(fileName))
 }
 
 def detectPolarity(phrase: String, entries: List[Entry]): String = {
@@ -127,4 +128,9 @@ val exists = allEntries.find(_.word == "good").exists(_ != null)
 val goodPol = findWordPolarity("good", allEntries)
 val inputPol = findPhrasePolarity(textCleanupAndSplit(input), allEntries)
 
-PolarityDetectionController.detectPolarity(input, PolarityDetectionController.loadEntries())
+
+//val filepaths = "C:\\Users\\pefer\\Desktop\\TAP\\1140953_1140956_1141233_a_2019_tap_ncf\\resources\\SentiWordNet_3.0.0_20130122.txt"
+//val stuff = PolarityDetectionController.loadEntries(filepaths)
+//val stuff2 = PolarityDetectionController.detectPolarity(input, stuff)
+
+

@@ -1,6 +1,7 @@
 import org.scalacheck.Gen
-
 import scala.io.Source
+import domain.Entry
+
 
 val g1 = Gen.oneOf( 1, 2, 3)
 val g2 = Gen.alphaStr
@@ -18,3 +19,15 @@ val genAccount = for (
 
 genAccount.sample
 
+
+val gEntry: Gen[Entry] = for (
+  w <- Gen.alphaStr.suchThat(i => !i.isEmpty);
+  p <- Gen.choose[Double](0, 1);
+  n <- Gen.choose[Double](0, 1)
+) yield Entry(w,p,n)
+
+val glEntries: Gen[List[Entry]] = Gen.sized{
+  s => Gen.listOfN(math.min(5, s), gEntry)
+}
+
+glEntries.sample
