@@ -3,7 +3,7 @@
 .vscode/
 
 # Target folders
-*/target/*
+target/
 
 # Compiled class file
 *.class
