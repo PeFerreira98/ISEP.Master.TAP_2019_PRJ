@@ -1,55 +1,114 @@
 import domain.Entry
+import controller.PolarityDetectionController
 
-import io.Source
+import scala.io.Source
 
 // Prototype functions
 
-def loadEntries(): List[Entry] = {
-  val fileName = "C:\\Users\\rmvieira\\Documents\\TAP\\1140953_1140956_1141233_a_2019_tap_ncf\\resources\\SentiWordNet_3.0.0_20130122.txt"
-  //val fileName = "..\\resources\\SentiWordNet_3.0.0_20130122.txt"
+def findWordPolarity(word: String, entries: List[Entry]): Double = {
+  // TODO: change this if parsing behaviour changes
+  /*// assuming there are no duplicates and average has already been performed
+  val entry = entries.find(_.word == word).get
+  if(entry == null)
+    0
+  else
+    entry.positiveScore - entry.negativeScore
+  */
 
-  for (line
-       <-
-       Source.fromFile(fileName).getLines().toList
-         .filter(_.startsWith("a"))
-         .map(_.split("\t")
-           .map(_.trim)))
+  // Processing all entries and calculating average
+  val duplicatedEntryValues = (entries collect {
+    case i:Entry if (i.word == word) => i
+  })
+    .map(x => x.positiveScore - x.negativeScore)
+
+  if(duplicatedEntryValues.isEmpty)
+    0
+  else
+    duplicatedEntryValues.sum / duplicatedEntryValues.size
+}
+
+ def findPhrasePolarity(phrase: List[String], entries: List[Entry]): Double ={
+  val polarities = for(word <- phrase)
+    yield findWordPolarity(word, entries)
+
+  polarities.sum / polarities.count(_ != 0)
+}
+
+// Parses the raw file lines
+// returns: a list of the parsed entries
+def parseEntries(lines:List[String]): List[Entry] = {
+  ( for (line
+         <-
+         lines.filter(_.startsWith("a"))
+           .map(_.split("\t")
+             .map(_.trim)))
     yield Entry(
       line(4).substring(0, line(4).indexOf("#")),
       line(2).toDouble,
-      line(3).toDouble)
-}
-
-def removeSpecialChars(input:String) : List[String] ={
-  input.replaceAll("[^a-zA-z ]", "")
-    .replaceAll(" +", " ")
-    .split(" ")
-    .map(_.trim)
-    .toList
-}
-
-private def findPhrasePolarity(input: List[String], entries: Stream[Entry]): Double ={
-  // TODO: implement feature here!!!
-  //input.map(findWordPolarity(_, entries)).sum / input.size
-  0
-}
-
-private def findWordPolarity(word: String, entries: Stream[Entry]): Double = {
-  0
+      line(3).toDouble) )
+    // sort alphabetically just for OCD satisfaction purposes
+    .sortBy(_.word)
 }
 
 
+// cleans the text from special characters and splits it into a list of words
+ def textCleanupAndSplit(text: String) : List[String] = {
+  text.replaceAll("[^a-zA-z]", " ")
+    .replaceAll(" {2,}", " ")
+    .split(" ").map(_.trim).toList
+}
+
+// Gets the lines from SentiWordNet file
+def readFromFile(): List[String] = {
+  val fileName = "C:\\Users\\rmvieira\\Documents\\TAP\\1140953_1140956_1141233_a_2019_tap_ncf\\resources\\SentiWordNet_3.0.0_20130122.txt"
+  Source.fromFile(fileName)
+    .getLines.toList
+}
+
+// Loads and parses all the entries in the SentiWordNet file
+// returns: a list of the parsed entries
+ def loadEntries(): List[Entry] = {
+  parseEntries(readFromFile())
+}
+
+def detectPolarity(phrase: String, entries: List[Entry]): String = {
+  val polarity = findPhrasePolarity(textCleanupAndSplit(phrase), entries)
+
+  if(polarity > 0) "Positive"
+  else if (polarity < 0) "Negative"
+  else "Neutral"
+}
+
+private def removeDuplicates (entries: List[Entry]) : List[Entry] = {
+  // TODO: remove duplicated values when loading entries
+  // TODO: calculate average
+  /*(for(x <- entries)
+    yield {
+      entries collect {
+        case i: Entry if (i.word == x.word) => i
+      }
+    }).map(findWordPolarity(_, entries))
+
+   */null
+}
 
 // testing stuff
 
-val total = loadEntries().sortBy(_.word)
+val allEntries = loadEntries().sortBy(_.word)
 
 
 // find entries for polarity calculation
-val unique = total.find(_.word == "able")
+val unique = allEntries.find(_.word == "able")
 
-val duplicates = total collect {
-  case i:Entry if (i.word == "good") => i
+for(x <- allEntries)
+  yield {
+    allEntries collect {
+      case i: Entry if (i.word == x.word) => i
+    }
+  }
+
+val duplicates = allEntries collect {
+  case i: Entry if (i.word == "good") => i
 }
 
 val duplicateValues = duplicates.map(x => x.positiveScore - x.negativeScore)
@@ -57,29 +116,15 @@ val count = duplicates.size
 val goodPolarity = duplicateValues.sum / duplicates.size
 
 
-val input = "a_priori this is good!"
+val input = "a_priori this abandoned stuff is good!"
 val inputX = "aA09 <> ,;.:-_ ~^ºª !\"#$%&/\\|()=?' «»€@£§{[]}"
 
-val inputXl = removeSpecialChars(input)
+val inputXl = textCleanupAndSplit(input)
 
-val exists = total.find(_.word == "good").exists(_ != null)
-
-
-// TODO: THIS ACCTUALLY WORDKS!
-val matchValues = (for (word <- inputXl if total.find(_.word == word).exists(_ != null))
-  yield {
-    val entry = total.find(_.word == word).get
-    entry.positiveScore - entry.negativeScore
-  })
+val exists = allEntries.find(_.word == "good").exists(_ != null)
 
 
+val goodPol = findWordPolarity("good", allEntries)
+val inputPol = findPhrasePolarity(textCleanupAndSplit(input), allEntries)
 
-val matchValues2 = for (word <- inputXl if total.find(_.word == word).exists(_ != null))
-  yield {
-    val entries = (total collect {
-      case i:Entry if (i.word == word) => i
-    }).map(x => x.positiveScore - x.negativeScore)
-  }
-
-val sum1 = matchValues.sum / matchValues.size
-
+PolarityDetectionController.detectPolarity(input, PolarityDetectionController.loadEntries())

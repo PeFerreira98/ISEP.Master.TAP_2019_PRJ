@@ -27,7 +27,7 @@ object PolarityDetectionController {
   }
 
   private def findWordPolarity(word: String, entries: Stream[Entry]): Double = {
-    // TODO: implement feature here!!!
+    // TODO: change this if parsing behaviour changes
     /*// assuming there are no duplicates and average has already been performed
     val entry = entries.find(_.word == word).get
     if(entry == null)
@@ -63,7 +63,7 @@ object PolarityDetectionController {
 
   // Gets the lines from SentiWordNet file
   private def readFromFile(): Stream[String] = {
-    val fileName = "C:\\Users\\rmvieira\\Documents\\TAP\\1140953_1140956_1141233_a_2019_tap_ncf\\SentiWordNet_3.0.0_20130122.txt"
+    val fileName = "C:\\Users\\rmvieira\\Documents\\TAP\\1140953_1140956_1141233_a_2019_tap_ncf\\resources\\SentiWordNet_3.0.0_20130122.txt"
     Source.fromFile(fileName)
       .getLines.toStream
   }
