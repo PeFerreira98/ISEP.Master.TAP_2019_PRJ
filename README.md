@@ -1,4 +1,4 @@
-# 1140953_1140956_1141233_A_2019_TAP_NCF
+# 1140953_1140956_1141233_M1A_2019_TAP_NCF
 
 # Objectives 
 The main objective of this work is the design and development of an application using functional programming techniques.
