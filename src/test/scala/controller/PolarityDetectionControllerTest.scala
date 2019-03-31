@@ -2,12 +2,17 @@ package controller
 
 import domain.Entry
 import controller.PolarityDetectionController._
+import java.io.File
+
 import org.scalatest.FunSuite
+
+import scala.io.Source
 
 class PolarityDetectionControllerTest extends FunSuite {
 
   //val absolutePath = "C:\\Users\\rmvieira\\Documents\\TAP\\1140953_1140956_1141233_a_2019_tap_ncf"
   val absolutePath = "C:\\Users\\pefer\\Desktop\\TAP\\1140953_1140956_1141233_a_2019_tap_ncf"
+  val sentiword = absolutePath + "\\resources\\SentiWordNet_3.0.0_20130122.txt"
   val filePath = absolutePath + "\\resources\\SentiWordNet_3.0.0_20130122_test.txt"
   val emptyFilePath = absolutePath + "\\resources\\SentiWordNet_3.0.0_20130122_test2.txt"
 
@@ -69,8 +74,6 @@ class PolarityDetectionControllerTest extends FunSuite {
     assert(detectPolarity("relational", entries) == "Neutral")
     assert(detectPolarity("absorptive", entries) == "Neutral")
     assert(detectPolarity("unquestioning", entries) == "Neutral")
-
-    assert(detectPolarity("This is neither good nor bad", entries) == "Neutral")
   }
 
   test("Test Detect Phrases Polarity") {
@@ -84,4 +87,34 @@ class PolarityDetectionControllerTest extends FunSuite {
     assert(detectPolarity("This is not good", entries) == "Positive")
     assert(detectPolarity("This is not bad", entries) == "Negative")
   }
+
+  test("Test Positive Reviews polarity") {
+
+
+    val projectPath = "C:\\Users\\rmvieira\\Documents\\TAP\\1140953_1140956_1141233_a_2019_tap_ncf"
+    //val projectPath = "C:\\Users\\pefer\\Desktop\\TAP\\1140953_1140956_1141233_a_2019_tap_ncf"
+    val folderPath = projectPath + "\\resources\\review_polarity\\txt_sentoken\\pos\\"
+
+    val entries = loadEntries(sentiword)
+
+    for(file <- listFiles(folderPath)){
+      filePolarity(file, entries)
+    }
+  }
+
+  private def listFiles(dir:String ) : List[File] = {
+    val file = new File(dir)
+    file.listFiles.filter(_.isFile)
+      .filter(_.getName.endsWith(".txt")).toList
+  }
+
+  private def filePolarity(file: File, entries: Stream[Entry]): String ={
+    val source = Source.fromFile(file)
+    val text = source.getLines().toStream.mkString(" ")
+    val pol = detectPolarity(text, entries)
+
+    source.close()
+    pol
+  }
+
 }

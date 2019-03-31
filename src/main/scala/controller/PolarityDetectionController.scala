@@ -2,7 +2,6 @@ package controller
 
 import scala.io.Source
 import domain.Entry
-import sun.reflect.generics.reflectiveObjects.NotImplementedException
 import utils.Utils.textCleanupAndSplit
 
 object PolarityDetectionController {
@@ -32,7 +31,7 @@ object PolarityDetectionController {
   private def findWordPolarity(word: String, entries: Stream[Entry]): Double = {
     // TODO: change this if parsing behaviour changes
     /*// assuming there are no duplicates and average has already been performed
-    val entry = entries.find(_.word == word).get
+    val entry = entries.find(_.word == word).getw
     if(entry == null)
       0
     else
