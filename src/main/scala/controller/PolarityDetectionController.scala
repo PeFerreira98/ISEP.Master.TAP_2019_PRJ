@@ -1,7 +1,9 @@
 package controller
 
 import scala.io.Source
-import domain.{Entry}
+import domain.Entry
+import sun.reflect.generics.reflectiveObjects.NotImplementedException
+import utils.Utils.textCleanupAndSplit
 
 object PolarityDetectionController {
 
@@ -39,7 +41,7 @@ object PolarityDetectionController {
 
     // Processing all entries and calculating average
     val duplicatedEntryValues = (entries collect {
-      case i:Entry if (i.word == word) => i
+      case i:Entry if (i.word.equalsIgnoreCase(word)) => i
     })
       .map(x => x.positiveScore - x.negativeScore)
 
@@ -47,13 +49,6 @@ object PolarityDetectionController {
       0
     else
       duplicatedEntryValues.sum / duplicatedEntryValues.size
-  }
-
-  // cleans the text from special characters and splits it into a list of words
-  private def textCleanupAndSplit(text: String) : List[String] = {
-    text.replaceAll("[^a-zA-z]", " ")
-      .replaceAll(" {2,}", " ")
-      .split(" ").map(_.trim).toList
   }
 
   // Loads and parses all the entries in the SentiWordNet file

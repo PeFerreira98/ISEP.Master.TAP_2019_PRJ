@@ -53,8 +53,8 @@ def parseEntries(lines:List[String]): List[Entry] = {
 
 
 // cleans the text from special characters and splits it into a list of words
- def textCleanupAndSplit(text: String) : List[String] = {
-  text.replaceAll("[^a-zA-z]", " ")
+def textCleanupAndSplit(text: String) : List[String] = {
+  text.replaceAll("[^a-zA-z_ ]", "")
     .replaceAll(" {2,}", " ")
     .split(" ").map(_.trim).toList
 }
@@ -67,8 +67,8 @@ def readFromFile(fileName: String): List[String] = {
 // Loads and parses all the entries in the SentiWordNet file
 // returns: a list of the parsed entries
  def loadEntries(): List[Entry] = {
-  //val fileName = "C:\\Users\\rmvieira\\Documents\\TAP\\1140953_1140956_1141233_a_2019_tap_ncf\\resources\\SentiWordNet_3.0.0_20130122.txt"
-  val fileName = "C:\\Users\\pefer\\Desktop\\TAP\\1140953_1140956_1141233_a_2019_tap_ncf\\resources\\SentiWordNet_3.0.0_20130122.txt"
+  val fileName = "C:\\Users\\rmvieira\\Documents\\TAP\\1140953_1140956_1141233_a_2019_tap_ncf\\resources\\SentiWordNet_3.0.0_20130122.txt"
+  //val fileName = "C:\\Users\\pefer\\Desktop\\TAP\\1140953_1140956_1141233_a_2019_tap_ncf\\resources\\SentiWordNet_3.0.0_20130122.txt"
   parseEntries(readFromFile(fileName))
 }
 
@@ -101,12 +101,14 @@ val allEntries = loadEntries().sortBy(_.word)
 // find entries for polarity calculation
 val unique = allEntries.find(_.word == "able")
 
+/*
 for(x <- allEntries)
   yield {
     allEntries collect {
       case i: Entry if (i.word == x.word) => i
     }
   }
+*/
 
 val duplicates = allEntries collect {
   case i: Entry if (i.word == "good") => i
@@ -120,7 +122,7 @@ val goodPolarity = duplicateValues.sum / duplicates.size
 val input = "a_priori this abandoned stuff is good!"
 val inputX = "aA09 <> ,;.:-_ ~^ºª !\"#$%&/\\|()=?' «»€@£§{[]}"
 
-val inputXl = textCleanupAndSplit(input)
+val inputXl = textCleanupAndSplit(inputX)
 
 val exists = allEntries.find(_.word == "good").exists(_ != null)
 
@@ -132,5 +134,4 @@ val inputPol = findPhrasePolarity(textCleanupAndSplit(input), allEntries)
 //val filepaths = "C:\\Users\\pefer\\Desktop\\TAP\\1140953_1140956_1141233_a_2019_tap_ncf\\resources\\SentiWordNet_3.0.0_20130122.txt"
 //val stuff = PolarityDetectionController.loadEntries(filepaths)
 //val stuff2 = PolarityDetectionController.detectPolarity(input, stuff)
-
 

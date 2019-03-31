@@ -26,4 +26,10 @@ object PolarityDetectionControllerPropertyTest extends Properties("PolarityDetec
     else
       false
   }}
+
+  property("negative statements don't affect polarity")
+    = forAll(gString, glEntries){ (n1: String, n2: List[Entry]) => {
+      detectPolarity(n1, n2.toStream) == detectPolarity("not " + n1, n2.toStream)
+    }
+  }
 }
