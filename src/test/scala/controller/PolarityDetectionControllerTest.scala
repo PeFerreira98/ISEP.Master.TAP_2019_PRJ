@@ -1,8 +1,7 @@
 package controller
 
 import domain.Entry
-import controller.PolarityDetectionController.detectPolarity
-import controller.PolarityDetectionController.loadEntries
+import controller.PolarityDetectionController._
 import org.scalatest.FunSuite
 
 class PolarityDetectionControllerTest extends FunSuite {

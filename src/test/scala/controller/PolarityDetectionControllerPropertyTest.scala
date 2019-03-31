@@ -5,31 +5,42 @@ import controller.PolarityDetectionController.detectPolarity
 import controller.PolarityDetectionController.loadEntries
 import org.scalacheck.{Gen, Properties, Test}
 import org.scalacheck.Prop.forAll
+import generators.Generators._
 
 object PolarityDetectionControllerPropertyTest extends Properties("PolarityDetectionController") {
 
-  val gEntry: Gen[Entry] = for (
-    w <- Gen.alphaStr.suchThat(i => !i.isEmpty);
-    p <- Gen.choose[Double](0, 1);
-    n <- Gen.choose[Double](0, 1)
-  ) yield Entry(w,p,n)
-
-  val glEntries: Gen[List[Entry]] = Gen.sized{
-    s => Gen.listOfN(math.min(5, s), gEntry)
+  property("Detect Good Polarity")
+    = forAll(gGoodString, glEntries){ (text: String, entries: List[Entry]) => {
+      val pol = detectPolarity(text, entries.toStream)
+      println(pol)
+      pol == "Positive" || pol == "Neutral" //in case generator didn't pick the word
+    }
   }
 
-  val gString: Gen[String] = Gen.alphaStr.suchThat(i => !i.isEmpty)
+  property("Detect Bad Polarity")
+    = forAll(gBadString, glEntries){ (text: String, entries: List[Entry]) => {
+    val pol = detectPolarity(text, entries.toStream)
+    pol == "Negative" || pol == "Neutral"
+    }
+  }
 
-  property("detectPolarity") = forAll(gString, glEntries){ (n1: String, n2: List[Entry]) => {
-    if (detectPolarity(n1, n2.toStream) == "Neutral")
-      true
-    else
-      false
-  }}
+  property("Detect Neutral Polarity")
+    = forAll(gNeutralString, glEntries){ (text: String, entries: List[Entry]) => {
+      val pol = detectPolarity(text, entries.toStream)
+      pol == "Neutral"
+    }
+  }
 
+  //  (e.g. not <adjective>)
   property("negative statements don't affect polarity")
-    = forAll(gString, glEntries){ (n1: String, n2: List[Entry]) => {
-      detectPolarity(n1, n2.toStream) == detectPolarity("not " + n1, n2.toStream)
+    = forAll(gMixString, glEntries){ (text: String, entries: List[Entry]) => {
+      detectPolarity(text, entries.toStream) == detectPolarity("not " + text, entries.toStream)
+    }
+  }
+
+  property("neutral words don't affect the phrase's polarity")
+    = forAll(gMixString, gNeutralString, glEntries){ (text: String, neutral: String, entries: List[Entry]) => {
+      detectPolarity(text, entries.toStream) == detectPolarity(neutral + " " + text, entries.toStream)
     }
   }
 }

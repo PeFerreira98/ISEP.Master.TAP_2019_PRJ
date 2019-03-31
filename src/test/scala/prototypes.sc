@@ -2,6 +2,8 @@ import domain.Entry
 import controller.PolarityDetectionController
 import controller.PolarityDetectionController.detectPolarity
 import controller.PolarityDetectionController.loadEntries
+import utils.Utils.textCleanupAndSplit
+
 import scala.io.Source
 
 // Prototype functions
@@ -133,5 +135,11 @@ val inputPol = findPhrasePolarity(textCleanupAndSplit(input), allEntries)
 
 //val filepaths = "C:\\Users\\pefer\\Desktop\\TAP\\1140953_1140956_1141233_a_2019_tap_ncf\\resources\\SentiWordNet_3.0.0_20130122.txt"
 //val stuff = PolarityDetectionController.loadEntries(filepaths)
+
 //val stuff2 = PolarityDetectionController.detectPolarity(input, stuff)
 
+textCleanupAndSplit("")
+  .map(word => if (word.isEmpty) 0 else
+    if(word.matches("[a-zA-Z_]+"))
+      0 else 1
+  ).sum
