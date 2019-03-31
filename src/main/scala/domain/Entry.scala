@@ -1,3 +1,3 @@
 package domain
 
-case class Entry (word: String, positiveScore: Double, negativeScore: Double)
+final case class Entry (word: String, positiveScore: Double, negativeScore: Double)
