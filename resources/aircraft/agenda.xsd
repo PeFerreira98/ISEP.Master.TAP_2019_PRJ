@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:element name="agenda" type="agendaType"/>
+  <xs:complexType name="agendaType">
+    <xs:sequence>
+      <xs:element type="aircraftsType" name="aircrafts" maxOccurs="1" minOccurs="1"/>
+      <xs:element type="runwaysType" name="runways" maxOccurs="1" minOccurs="1"/>
+    </xs:sequence>
+    <xs:attribute type="xs:positiveInteger" name="maximumDelayTime" use="required"/>
+  </xs:complexType>
+  <xs:complexType name="aircraftsType">
+    <xs:sequence>
+      <xs:element type="aircraftType" name="aircraft" maxOccurs="unbounded" minOccurs="1"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="runwaysType">
+    <xs:sequence>
+      <xs:element type="runwayType" name="runway" maxOccurs="unbounded" minOccurs="1"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="aircraftType">
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute type="xs:positiveInteger" name="number" use="required"/>
+        <xs:attribute type="xs:nonNegativeInteger" name="target" use="required"/>
+        <xs:attribute type="classSType" name="class" use="required"/>
+        <xs:attribute type="xs:positiveInteger" name="emergency" use="optional"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+  <xs:complexType name="runwayType">
+    <xs:sequence>
+      <xs:element type="classType" name="class" maxOccurs="unbounded" minOccurs="1"/>
+    </xs:sequence>
+    <xs:attribute type="xs:positiveInteger" name="number" use="required"/>
+  </xs:complexType>
+  <xs:complexType name="classType">
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute type="classSType" name="type"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+  <xs:simpleType name="classSType">
+    <xs:restriction base="xs:byte">
+      <xs:minInclusive value="1"/>
+      <xs:maxInclusive value="6"/>
+    </xs:restriction>
+  </xs:simpleType>
+</xs:schema>
