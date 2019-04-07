@@ -8,7 +8,7 @@ import org.scalacheck.Properties
 object UtilsPropertyTest extends Properties("Utils") {
 
   property("Text can't contain special characters")
-    = forAll(gDirtyString){ (text: String) => {
+    = forAll(gDirtyString){ text: String => {
       println("TEXT: " + text)
 
     textCleanupAndSplit(text)

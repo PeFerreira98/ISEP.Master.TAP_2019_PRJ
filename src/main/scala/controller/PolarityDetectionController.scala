@@ -29,15 +29,6 @@ object PolarityDetectionController {
   }
 
   private def findWordPolarity(word: String, entries: Stream[Entry]): Double = {
-    // TODO: change this if parsing behaviour changes
-    /*// assuming there are no duplicates and average has already been performed
-    val entry = entries.find(_.word == word).getw
-    if(entry == null)
-      0
-    else
-      entry.positiveScore - entry.negativeScore
-    */
-
     // Processing all entries and calculating average
     val duplicatedEntryValues = (entries collect {
       case i:Entry if (i.word.equalsIgnoreCase(word)) => i
@@ -77,11 +68,4 @@ object PolarityDetectionController {
     .sortBy(_.word)
   }
 
-  // Removes the duplicated entries and calculates and average for affected entries
-  // returns: a list of entries without duplicated entries
-  private def removeDuplicates (entries: Stream[Entry]) : Stream[Entry] = {
-    // TODO: remove duplicated values when loading entries
-    // TODO: calculate average
-    null
-  }
 }
