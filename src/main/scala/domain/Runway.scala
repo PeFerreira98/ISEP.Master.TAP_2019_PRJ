@@ -1,3 +1,3 @@
 package domain
 
-case class Runway(number: String, classes: Set[Class])
+case class Runway(number: Integer, classes: Set[Class])
