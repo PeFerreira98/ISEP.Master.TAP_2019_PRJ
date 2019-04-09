@@ -1,13 +1,12 @@
 package controller
 
-import domain.{Agenda, Aircraft, Runway, Schedule}
+import domain.{Agenda, Schedule}
 
 object AirportController {
 
-  val calculateSchedule : Agenda => Set[Schedule] = calculateSchedulePriv
+  val calculateSchedule : Agenda => Option[Seq[Schedule]] = calculateSchedulePriv
 
-  def calculateSchedulePriv(agenda: Agenda) : Set[Schedule] = {
-    // TODO: DO IT!
-    ???
+  def calculateSchedulePriv(agenda: Agenda) : Option[Seq[Schedule]] = {
+    agenda.schedule
   }
 }
