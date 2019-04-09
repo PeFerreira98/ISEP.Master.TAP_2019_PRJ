@@ -1,6 +1,6 @@
 package domain
 
-class Agenda (maximumDelayTime: Integer , aircrafts: Seq[Aircraft], runways: Seq[Runway]) {
+class Agenda (maxDelayTime: Integer , aircraftList: Seq[Aircraft], runwayList: Seq[Runway]) {
 
   val maximumDelayTime = maxDelayTime
   val aircrafts = aircraftList
@@ -17,8 +17,6 @@ class Agenda (maximumDelayTime: Integer , aircrafts: Seq[Aircraft], runways: Seq
   }
 
   def circular[A](l: List[A]) : List[A] = {
-    //l.tail ::: l.head :: Nil
-    //l.tail :+ l.head
     l.headOption.map(h =>  l.tail :+ h).getOrElse(List())
   }
 }

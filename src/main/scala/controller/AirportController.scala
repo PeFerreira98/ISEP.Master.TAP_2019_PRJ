@@ -1,12 +1,12 @@
 package controller
 
-import domain.{Agenda, Schedule}
+import io.XmlAirportIO.{loadAgenda, saveSchedule}
 
 object AirportController {
 
-  val calculateSchedule : Agenda => Option[Seq[Schedule]] = calculateSchedulePriv
+  val processSchedule : (String, String) => Unit = calculateSchedulePriv
 
-  def calculateSchedulePriv(agenda: Agenda) : Option[Seq[Schedule]] = {
-    agenda.schedule
+  def calculateSchedulePriv(inputFilePath: String, outputFilePath: String)  = {
+    saveSchedule(loadAgenda(inputFilePath).schedule, outputFilePath)
   }
 }

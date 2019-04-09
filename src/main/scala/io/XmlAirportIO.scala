@@ -8,14 +8,12 @@ object XmlAirportIO {
 
   // Load XML
   val loadAgenda : String => Agenda = loadAgendaPriv
-  val loadAircrafts : Elem => Seq[Aircraft] = loadAircraftsPriv
-  val loadRunways : Elem => Seq[Runway] = loadRunwaysPriv
 
   // Save XML
-  val saveSchedule: (Seq[Schedule],  String) => Unit = saveSchedulePriv
+  val saveSchedule: (Option[Seq[Schedule]], String) => Unit = saveSchedulePriv
 
   // Load XML
-  def loadAgendaPriv(filePath: String) : Agenda = {
+  private def loadAgendaPriv(filePath: String) : Agenda = {
     val fileXml = XML.load(filePath)
     new Agenda(fileXml.\@("maximumDelayTime").toInt, loadAircrafts(fileXml), loadRunways(fileXml))
   }
@@ -50,7 +48,7 @@ object XmlAirportIO {
   }
 
   // Save XML
-  private def saveSchedulePriv(schedule: Seq[Schedule], filePath: String) = {
+  private def saveSchedulePriv(schedule: Option[Seq[Schedule]], filePath: String) = {
     // TODO: do it!
     val node = ???
     XML.save(filePath, node)
