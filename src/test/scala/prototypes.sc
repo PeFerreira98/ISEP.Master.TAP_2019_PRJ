@@ -1,6 +1,7 @@
-//import domain.{Class1, Class2, Class3, Class4, Class5, Class6, Runway}
-//import domain.{Aircraft, Class1}
-import domain._
+import io.XmlAirportIO
+
+import scala.xml.{Attribute, Null, Text}
+//import domain._
 
 // Prototype functions
 
@@ -30,9 +31,25 @@ val qwe = <agenda maximumDelayTime="900" xmlns:xsi="http://www.w3.org/2001/XMLSc
   </runways>
 </agenda>
 
-val aircraftNodes = qwe \ "aircrafts" \ "aircraft"
+val aircraftNodes = qwe \\ "agenda" \ "aircrafts" \ "aircraft"
 
-val runways = qwe \ "runways" \ "runway"
+val runways = qwe\\ "agenda" \ "runways" \ "runway"
+
+val seq = Seq(1,2,3)
+
+<schedule> {
+  seq.map(s =>
+  <aircraft />% {Attribute(None, "runway", Text(s.toString), Null)}
+    % {Attribute(None, "time", Text(s.toString), Null)}
+    % {Attribute(None, "number", Text(s.toString), Null)}
+  )}
+</schedule>
+
+XmlAirportIO.saveSchedule(Option(Seq(domain.Schedule(
+  domain.Aircraft(1,0,domain.Class5),
+  0,
+  domain.Runway(1, Seq(domain.Class5)))
+)), "C:\\Users\\rmvieira\\Documents\\TAP\\1140953_1140956_1141233_2019_tap_ncf\\resources\\output.xml")
 
 /*
 runways.map(node =>

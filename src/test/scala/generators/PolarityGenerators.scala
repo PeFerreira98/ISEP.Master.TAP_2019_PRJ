@@ -3,7 +3,7 @@ package generators
 import domain.Entry
 import org.scalacheck.Gen
 
-object Generators {
+object PolarityGenerators {
 
   // String generators
   val gString: Gen[String] = Gen.alphaStr.suchThat(i => !i.isEmpty)
@@ -33,7 +33,7 @@ object Generators {
 
   val gEntry: Gen[Entry] = Gen.oneOf(gGoodEntry, gBadEntry, gNeutralEntry)
 
-  // List Generators
+  // List PolarityGenerators
   val glEntries: Gen[List[Entry]] = Gen.sized {
     s => Gen.listOfN(math.min(5000, s) ,gEntry)
   }

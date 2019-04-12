@@ -2,17 +2,15 @@ package controller
 
 import domain._
 import controller.PolarityDetectionController.detectPolarity
-import controller.PolarityDetectionController.loadEntries
 import org.scalacheck.{Gen, Properties, Test}
 import org.scalacheck.Prop.forAll
-import generators.Generators._
+import generators.PolarityGenerators._
 
 object PolarityDetectionControllerPropertyTest extends Properties("PolarityDetectionController") {
 
   property("Detect Good Polarity")
     = forAll(gGoodString, glEntries){ (text: String, entries: List[Entry]) => {
       val pol = detectPolarity(text, entries.toStream)
-      println(pol)
       pol == "Positive" || pol == "Neutral" //in case generator didn't pick the word
     }
   }

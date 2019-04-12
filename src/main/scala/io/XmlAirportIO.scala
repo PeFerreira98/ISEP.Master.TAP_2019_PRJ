@@ -2,7 +2,7 @@ package io
 
 import domain.{Agenda, Aircraft, Class1, Class2, Class3, Class4, Class5, Class6, Runway, Schedule}
 
-import scala.xml.{Elem, XML}
+import scala.xml.{Attribute, Elem, Node, Null, Text, TopScope, XML}
 
 object XmlAirportIO {
 
@@ -15,11 +15,11 @@ object XmlAirportIO {
   // Load XML
   private def loadAgendaPriv(filePath: String) : Agenda = {
     val fileXml = XML.load(filePath)
-    new Agenda(fileXml.\@("maximumDelayTime").toInt, loadAircrafts(fileXml), loadRunways(fileXml))
+    new Agenda(fileXml.\@("maximumDelayTime").toInt, loadAircraftsPriv(fileXml), loadRunwaysPriv(fileXml))
   }
 
   private def loadAircraftsPriv(fileXml: Elem) : Seq[Aircraft] = {
-    (fileXml \ "aircrafts" \ "aircraft").map(node => Aircraft(node.\@("number").toInt,
+    (fileXml \\ "agenda" \ "aircrafts" \ "aircraft").map(node => Aircraft(node.\@("number").toInt,
       node.\@("target").toInt,
       node.\@("class") match {
         case "1" => Class1
@@ -32,9 +32,9 @@ object XmlAirportIO {
   }
 
   private def loadRunwaysPriv(fileXml: Elem) : Seq[Runway] = {
-    (fileXml \ "runways" \ "runway").map(node =>
-      Runway(node.\@("number").toInt,
-        (node \ "class")
+    (fileXml \\ "agenda" \ "runways" \ "runway").map(runwayNode =>
+      Runway(runwayNode.\@("number").toInt,
+        (runwayNode \ "class")
           .map(classNode => classNode.\@("type") match {
             case "1" => Class1
             case "2" => Class2
@@ -49,8 +49,18 @@ object XmlAirportIO {
 
   // Save XML
   private def saveSchedulePriv(schedule: Option[Seq[Schedule]], filePath: String) = {
-    // TODO: do it!
-    val node = ???
-    XML.save(filePath, node)
+    val xmlContent = <schedule> {
+      schedule.getOrElse(Seq()).map(s =>
+          <aircraft />% {Attribute(None, "runway", Text(s.runway.number.toString), Null)}
+          % {Attribute(None, "time", Text(s.time.toString), Null)}
+          % {Attribute(None, "number", Text(s.aircraft.number.toString), Null)}
+      )}
+    </schedule>
+    XML.save(filePath, xmlContent)
+  }
+
+  private def addChild(n: Node, newChild: Node) = n match {
+    case Elem(prefix, label, attribs, scope, child @ _*) =>
+      Elem(prefix, label, attribs, scope, child ++ newChild : _*)
   }
 }

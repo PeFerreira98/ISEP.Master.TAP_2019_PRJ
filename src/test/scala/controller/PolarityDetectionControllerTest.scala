@@ -10,11 +10,9 @@ import scala.io.Source
 
 class PolarityDetectionControllerTest extends FunSuite {
 
-  //val absolutePath = "C:\\Users\\rmvieira\\Documents\\TAP\\1140953_1140956_1141233_a_2019_tap_ncf"
-  val absolutePath = "C:\\Users\\pefer\\Desktop\\TAP\\1140953_1140956_1141233_a_2019_tap_ncf"
-  val sentiword = absolutePath + "\\resources\\SentiWordNet_3.0.0_20130122.txt"
-  val filePath = absolutePath + "\\resources\\SentiWordNet_3.0.0_20130122_test.txt"
-  val emptyFilePath = absolutePath + "\\resources\\SentiWordNet_3.0.0_20130122_test2.txt"
+  val sentiword = "resources/SentiWordNet_3.0.0_20130122.txt"
+  val filePath = "resources/SentiWordNet_3.0.0_20130122_Test.txt"
+  val emptyFilePath = "resources/SentiWordNet_3.0.0_20130122_Test2.txt"
 
   private val testEntries = Stream(
     // Positive
@@ -42,10 +40,10 @@ class PolarityDetectionControllerTest extends FunSuite {
   test("Test Load Provided Entries") {
     val entries = loadEntries(filePath)
 
-    assert(!entries.isEmpty)
-    assert(detectPolarity("good", entries) == "Positive")
-    assert(detectPolarity("bad", entries) == "Negative")
-    assert(detectPolarity("This is good", entries) == "Positive")
+    assert(entries.nonEmpty)
+    assert(detectPolarity("able", entries) == "Positive")
+    assert(detectPolarity("unable", entries) == "Negative")
+    assert(detectPolarity("The file was able to load with success", entries) == "Positive")
   }
 
   test("Test Load Empty Entries File") {
@@ -88,12 +86,9 @@ class PolarityDetectionControllerTest extends FunSuite {
     assert(detectPolarity("This is not bad", entries) == "Negative")
   }
 
+  /*
   test("Test Positive Reviews polarity") {
-
-
-    val projectPath = "C:\\Users\\rmvieira\\Documents\\TAP\\1140953_1140956_1141233_a_2019_tap_ncf"
-    //val projectPath = "C:\\Users\\pefer\\Desktop\\TAP\\1140953_1140956_1141233_a_2019_tap_ncf"
-    val folderPath = projectPath + "\\resources\\review_polarity\\txt_sentoken\\pos\\"
+    val folderPath = "resources/review_polarity/txt_sentoken/pos/"
 
     val entries = loadEntries(sentiword)
 
@@ -101,6 +96,7 @@ class PolarityDetectionControllerTest extends FunSuite {
       filePolarity(file, entries)
     }
   }
+  */
 
   private def listFiles(dir:String ) : List[File] = {
     val file = new File(dir)
