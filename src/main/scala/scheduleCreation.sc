@@ -166,9 +166,9 @@ val r2 = Runway(2, List(Class1, Class2, Class4, Class5))
 val r3 = Runway(3, List(Class2, Class3))
 
 var lst_aircrafts = Seq(a1,a2,a3,a4,a5)
-var lst_runways = Seq(r1,r2)
+var lst_runways = Seq()
 
 val lst_test = List(1,2,4)
-lst_runways.filter((r => r.classes.contains(a1.classe)))
+//lst_runways.filter((r => r.classes.contains(a1.classe)))
 
 val agenda = Agenda(900, lst_aircrafts, lst_runways).createSchedule(lst_aircrafts, List())
