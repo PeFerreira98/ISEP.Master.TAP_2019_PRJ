@@ -15,8 +15,4 @@ class Agenda (maxDelayTime: Integer , aircraftList: Seq[Aircraft], runwayList: S
 */
     ???
   }
-
-  private def circular[A](l: List[A]) : List[A] = {
-    l.headOption.map(h =>  l.tail :+ h).getOrElse(List())
-  }
 }
