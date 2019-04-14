@@ -14,6 +14,7 @@ class ScheduleControllerTest extends FunSuite {
     processSchedule(inputFilePath, outputFilePath)
   }
 
+
   test("testEmptyInputProcessSchedule") {
     val inputFilePath = resourcesFolder + "test/empty_agenda.xml"
     val outputFilePath = resourcesFolder + "test/schedule_test2.xml"
@@ -22,9 +23,18 @@ class ScheduleControllerTest extends FunSuite {
   }
 
   test("testNullInputProcessSchedule") {
+    val inputFilePath = ""
     val outputFilePath = resourcesFolder + "test/schedule_test3.xml"
 
-    processSchedule("", outputFilePath)
+    processSchedule(inputFilePath, outputFilePath)
+  }
+
+
+  test("testNullOutputProcessSchedule") {
+    val inputFilePath = resourcesFolder + "agenda.xml"
+    val outputFilePath = ""
+
+    processSchedule(inputFilePath, outputFilePath)
   }
 
 }
