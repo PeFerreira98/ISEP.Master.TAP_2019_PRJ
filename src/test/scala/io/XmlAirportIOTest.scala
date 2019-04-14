@@ -2,15 +2,15 @@ package io
 
 import domain.Class5
 import org.scalatest.FunSuite
-import io.XmlAirportIO
+import io.XmlAirportIO._
 
-class Test extends FunSuite {
+class XmlAirportIOTest extends FunSuite {
 
   val resourcesFolder = "resources/aircraft/"
 
   test("Test XML Loading Agenda") {
-    val inputFilePath = resourcesFolder +"agenda.xml"
-    val agenda = XmlAirportIO.loadAgenda(inputFilePath)
+    val inputFilePath = resourcesFolder + "agenda.xml"
+    val agenda = loadAgenda(inputFilePath)
 
     assert(agenda.maximumDelayTime == 900)
     assert(agenda.aircrafts.size == 5)
@@ -24,15 +24,30 @@ class Test extends FunSuite {
   }
 
   test("Test XML Save Schedule") {
-    XmlAirportIO.saveSchedule(Option(
-      Seq(domain.Schedule(
+    val filePath = resourcesFolder + "test/test_save.xml"
+    val schedule = Seq(
+      domain.Schedule(
         domain.Aircraft(1,0,domain.Class5),
         0,
         domain.Runway(1, Seq(domain.Class5))),
-        domain.Schedule(
-          domain.Aircraft(2,10,domain.Class4),
-          11,
-          domain.Runway(1, Seq(domain.Class4)))
-    )), "resources/aircraft/test/output.xml")
+      domain.Schedule(
+        domain.Aircraft(2,10,domain.Class4),
+        11,
+        domain.Runway(1, Seq(domain.Class4)))
+    )
+
+    saveSchedule(Option(schedule), filePath)
+  }
+
+  test("Test XML Save Empty Schedule") {
+    val filePath = resourcesFolder + "test/test_save_empty.xml"
+    val schedule = Seq()
+
+    saveSchedule(Option(schedule), filePath)
+  }
+
+  test("Test XML Save Non Existing Schedule") {
+    val filePath = resourcesFolder + "test/test_save_null.xml"
+    saveSchedule(None, filePath)
   }
 }

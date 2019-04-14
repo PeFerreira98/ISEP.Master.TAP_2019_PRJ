@@ -3,9 +3,13 @@ import utils.Utils
 
 case class Agenda (maxDelayTime: Integer , aircraftList: Seq[Aircraft], runwayList: Seq[Runway]) {
 
-  val maximumDelayTime = maxDelayTime
-  val aircrafts = aircraftList
-  val runways = runwayList
+  val maximumDelayTime: Integer = maxDelayTime
+  val aircrafts: Seq[Aircraft] = aircraftList
+  val runways: Seq[Runway] = runwayList
+
+  def schedule: Option[Seq[Schedule]] = {
+    createSchedule(aircrafts, List())
+  }
 
   private def getBestRunwayMatch(list : List[Schedule], a : Aircraft) : Schedule = {
     val bestMatch =
@@ -13,7 +17,7 @@ case class Agenda (maxDelayTime: Integer , aircraftList: Seq[Aircraft], runwayLi
         .filter(r => r._1.classes.contains(a.classe))
         .map(r => r._2.max(Ordering.by((s:Schedule) => s.time)))
 
-    if(bestMatch == null || bestMatch.size == 0)
+    if(bestMatch == null || bestMatch.isEmpty)
     {
       null
     }
@@ -22,11 +26,11 @@ case class Agenda (maxDelayTime: Integer , aircraftList: Seq[Aircraft], runwayLi
 
       if(s.time + Utils.getAircraftDelay(s.aircraft.classe, a.classe) < a.target)
       {
-        new Schedule(a, a.target , s.runway)
+        Schedule(a, a.target , s.runway)
       }
       else
       {
-        new Schedule(a, s.time + Utils.getAircraftDelay(s.aircraft.classe, a.classe) , s.runway)
+        Schedule(a, s.time + Utils.getAircraftDelay(s.aircraft.classe, a.classe) , s.runway)
       }
     }
   }
@@ -35,7 +39,7 @@ case class Agenda (maxDelayTime: Integer , aircraftList: Seq[Aircraft], runwayLi
     val freeRunways =
       (list.groupBy(_.runway).map(s=> s._1).toList.diff(runways) ::: runways.diff(list.groupBy(_.runway).map(s=> s._1).toList).toList).filter(r => r.classes.contains(a.classe))
 
-    if(freeRunways.size == 0)
+    if(freeRunways.isEmpty)
     {
       val res = getBestRunwayMatch(list, a)
 
@@ -55,25 +59,22 @@ case class Agenda (maxDelayTime: Integer , aircraftList: Seq[Aircraft], runwayLi
     }
     else
     {
-      new Schedule(a, a.target, freeRunways.headOption.get)
+      Schedule(a, a.target, freeRunways.headOption.get)
     }
   }
 
-  def createSchedule(aircrafts: Seq[Aircraft], scheduleList: List[Schedule]) : Seq[Schedule] = {
+  private def createSchedule(aircrafts: Seq[Aircraft], scheduleList: List[Schedule]) : Option[Seq[Schedule]] = {
     val a = aircrafts.headOption.getOrElse(null)
 
     if(a == null){
-      scheduleList
+      Option(scheduleList)
     }
     else
     {
       val tail = aircrafts.tail
       val schedule_item = getFreeSchedule(runways, scheduleList,a)
 
-      if(schedule_item == null)
-      {
-        List()
-      }
+      if(schedule_item == null) None
       else
       {
         val lstAux : List[Schedule]= scheduleList ::: List(schedule_item)

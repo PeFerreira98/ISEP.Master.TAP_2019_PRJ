@@ -12,6 +12,7 @@ object Utils {
       .split(" ").map(_.trim).toList
   }
 
+  // gets the aircraft delay
   private def getAircraftDelayPriv(leading: Class, trailing: Class) : Integer = {
     (leading, trailing) match {
       case (Class1, Class1) => 82

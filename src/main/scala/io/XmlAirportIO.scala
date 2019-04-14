@@ -1,8 +1,7 @@
 package io
 
 import domain.{Agenda, Aircraft, Class1, Class2, Class3, Class4, Class5, Class6, Runway, Schedule}
-
-import scala.xml.{Attribute, Elem, Node, Null, Text, TopScope, XML}
+import scala.xml.{Attribute, Elem, Node, Null, Text, XML}
 
 object XmlAirportIO {
 
@@ -15,7 +14,7 @@ object XmlAirportIO {
   // Load XML
   private def loadAgendaPriv(filePath: String) : Agenda = {
     val fileXml = XML.load(filePath)
-    new Agenda(fileXml.\@("maximumDelayTime").toInt, loadAircraftsPriv(fileXml), loadRunwaysPriv(fileXml))
+    Agenda(fileXml.\@("maximumDelayTime").toInt, loadAircraftsPriv(fileXml), loadRunwaysPriv(fileXml))
   }
 
   private def loadAircraftsPriv(fileXml: Elem) : Seq[Aircraft] = {
@@ -49,18 +48,19 @@ object XmlAirportIO {
 
   // Save XML
   private def saveSchedulePriv(schedule: Option[Seq[Schedule]], filePath: String) = {
-    val xmlContent = <schedule> {
-      schedule.getOrElse(Seq()).map(s =>
-          <aircraft />% {Attribute(None, "runway", Text(s.runway.number.toString), Null)}
-          % {Attribute(None, "time", Text(s.time.toString), Null)}
-          % {Attribute(None, "number", Text(s.aircraft.number.toString), Null)}
-      )}
-    </schedule>
-    XML.save(filePath, xmlContent)
-  }
-
-  private def addChild(n: Node, newChild: Node) = n match {
-    case Elem(prefix, label, attribs, scope, child @ _*) =>
-      Elem(prefix, label, attribs, scope, child ++ newChild : _*)
+    schedule match {
+      case Some(_) => {
+        val xmlContent =
+          <schedule xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="aircraftSchedule.xsd">
+            { schedule.getOrElse(Seq()).map(s =>
+            <aircraft />% {Attribute(None, "runway", Text(s.runway.number.toString), Null)}
+            % {Attribute(None, "time", Text(s.time.toString), Null)}
+            % {Attribute(None, "number", Text(s.aircraft.number.toString), Null)}
+          )}
+        </schedule>
+        XML.save(filePath, xmlContent, "UTF-8", true)
+      }
+      case None =>
+    }
   }
 }
