@@ -1,7 +1,6 @@
 package domain
 
 import org.scalatest.FunSuite
-import domain._
 
 class AgendaTest extends FunSuite {
 
@@ -80,7 +79,7 @@ class AgendaTest extends FunSuite {
 
     val aq = Agenda(10, aircrafts, runways).schedule
 
-    assert(aq == None)
+    assert(aq == Some(List()))
   }
 
   test("testNoRunwayClassSchedule") {
@@ -99,8 +98,48 @@ class AgendaTest extends FunSuite {
     assert(aq == None)
   }
 
+  test("testNoRunwayAndAircraftClassSchedule") {
+    val aircrafts = Seq()
 
+    val runways = Seq()
 
+    val aq = Agenda(10, aircrafts, runways).schedule
 
+    assert(aq == Some(List()))
+  }
+
+  test("testLotOfDelaySchedule") {
+    val aircrafts = Seq(
+      domain.Aircraft(1,0,domain.Class5),
+      domain.Aircraft(2,1,domain.Class5),
+      domain.Aircraft(3,2,domain.Class5),
+      domain.Aircraft(4,3,domain.Class5),
+      domain.Aircraft(5,4,domain.Class5),
+      domain.Aircraft(6,5,domain.Class5)
+    )
+
+    val runways = Seq(
+      domain.Runway(1, Seq(domain.Class5))
+    )
+
+    val aq = Agenda(9999, aircrafts, runways).schedule
+
+    assert(aq != None)
+  }
+
+  test("testNoDelaySchedule") {
+    val aircrafts = Seq(
+      domain.Aircraft(1,0,domain.Class5),
+      domain.Aircraft(2,1,domain.Class5)
+    )
+
+    val runways = Seq(
+      domain.Runway(1, Seq(domain.Class5))
+    )
+
+    val aq = Agenda(0, aircrafts, runways).schedule
+
+    assert(aq == None)
+  }
 
 }
