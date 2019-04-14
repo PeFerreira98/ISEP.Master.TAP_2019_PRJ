@@ -1,3 +1,3 @@
 package domain
 
-class Aircraft (number: Integer, target: Integer, classe: Class)
+case class Aircraft (number: Integer, target: Integer, classe: Class)

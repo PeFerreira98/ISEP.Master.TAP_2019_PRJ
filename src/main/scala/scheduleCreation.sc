@@ -1,5 +1,5 @@
 //import domain.{Aircraft, Runway, Schedule}
-//import utils.Utils
+//import domain._
 
 sealed trait Class
 
@@ -13,8 +13,65 @@ case object Class6 extends Class
 case class Aircraft (number: Integer, target: Integer, classe: Class)
 case class Runway(number: Integer, classes: Seq[Class])
 case class Schedule (aircraft: Aircraft, time: Integer, runway: Runway)
+object Utils {
 
-//TODO: Onde tem " + 10" nos tempos, necessário trocar pelo o valor da classe de cada avião
+  val textCleanupAndSplit : String => List[String] = textCleanupAndSplitPriv
+  val getAircraftDelay: (Class, Class) => Integer = getAircraftDelayPriv
+
+  // cleans the text from special characters and splits it into a list of words
+  private def textCleanupAndSplitPriv(text: String) : List[String] = {
+    text.replaceAll("[^a-zA-z_ ]", "")
+      .replaceAll(" {2,}", " ")
+      .split(" ").map(_.trim).toList
+  }
+
+  private def getAircraftDelayPriv(leading: Class, trailing: Class) : Integer = {
+    (leading, trailing) match {
+      case (Class1, Class1) => 82
+      case (Class1, Class2) => 69
+      case (Class1, Class3) => 60
+      case (Class1, Class4) => 75
+      case (Class1, Class5) => 75
+      case (Class1, Class6) => 75
+
+      case (Class2, Class1) => 131
+      case (Class2, Class2) => 69
+      case (Class2, Class3) => 60
+      case (Class2, Class4) => 75
+      case (Class2, Class5) => 75
+      case (Class2, Class6) => 75
+
+      case (Class3, Class1) => 196
+      case (Class3, Class2) => 157
+      case (Class3, Class3) => 96
+      case (Class3, Class4) => 75
+      case (Class3, Class5) => 75
+      case (Class3, Class6) => 75
+
+      case (Class4, Class1) => 60
+      case (Class4, Class2) => 60
+      case (Class4, Class3) => 60
+      case (Class4, Class4) => 60
+      case (Class4, Class5) => 60
+      case (Class4, Class6) => 60
+
+      case (Class5, Class1) => 60
+      case (Class5, Class2) => 60
+      case (Class5, Class3) => 60
+      case (Class5, Class4) => 60
+      case (Class5, Class5) => 60
+      case (Class5, Class6) => 60
+
+      case (Class6, Class1) => 60
+      case (Class6, Class2) => 60
+      case (Class6, Class3) => 60
+      case (Class6, Class4) => 120
+      case (Class6, Class5) => 120
+      case (Class6, Class6) => 90
+    }
+  }
+}
+
 case class Agenda (maxDelayTime: Integer , aircraftList: Seq[Aircraft], runwayList: Seq[Runway]) {
 
   val maximumDelayTime = maxDelayTime
@@ -24,21 +81,35 @@ case class Agenda (maxDelayTime: Integer , aircraftList: Seq[Aircraft], runwayLi
   private def getBestRunwayMatch(list : List[Schedule], a : Aircraft) : Schedule = {
     val bestMatch =
       list.groupBy(_.runway)
-        .map(r => r._2.max(Ordering.by((s:Schedule) => s.time + 10)))
-        .min(Ordering.by((s:Schedule) => s.time + 10))
+        .filter(r => r._1.classes.contains(a.classe))
+        .map(r => r._2.max(Ordering.by((s:Schedule) => s.time)))
 
-    new Schedule(a, bestMatch.time + /*Utils.getAircraftDelay(bestMatch.aircraft.classe, a.classe)*/ 10, bestMatch.runway)
+    //Check if isn't runways with aircraft class
+    if(bestMatch == null || bestMatch.size == 0)
+    {
+      null
+    }
+    else{
+      val s = bestMatch.min(Ordering.by((s:Schedule) => s.time + Utils.getAircraftDelay(s.aircraft.classe, a.classe)))
+      new Schedule(a, s.time + Utils.getAircraftDelay(s.aircraft.classe, a.classe), s.runway)
+    }
   }
 
   private def getFreeSchedule(runways : Seq[Runway], list : List[Schedule],a : Aircraft) : Schedule = {
-    val freeRunways = list.groupBy(_.runway).map(s=> s._1).toList.diff(runways) ::: runways.diff(list.groupBy(_.runway).map(s=> s._1).toList).toList
+    val freeRunways =
+      (list.groupBy(_.runway).map(s=> s._1).toList.diff(runways) ::: runways.diff(list.groupBy(_.runway).map(s=> s._1).toList).toList).filter(r => r.classes.contains(a.classe))
 
     if(freeRunways.size == 0)
     {
       val res = getBestRunwayMatch(list, a)
 
-      if(a.target + maximumDelayTime < res.time)
+      if(res == null){
+        println("--> ERROR - Doesn't exist none runways that support plane " + a.number + " class <--")
+        null
+      }
+      else if(a.target + maximumDelayTime < res.time)
       {
+        println("--> WARNING - Maximum delay time has been reached for plane " + a.number + " <--")
         null
       }
       else
@@ -65,7 +136,6 @@ case class Agenda (maxDelayTime: Integer , aircraftList: Seq[Aircraft], runwayLi
 
       if(schedule_item == null)
       {
-        println("--> WARNING - Maximum delay time has been reached for plane " + a.number  + " <--")
         List()
       }
       else
@@ -78,26 +148,20 @@ case class Agenda (maxDelayTime: Integer , aircraftList: Seq[Aircraft], runwayLi
   }
 }
 
-val a1 = new Aircraft(1,1,null)
-val a2 = new Aircraft(2,8,null)
-val a3 = new Aircraft(3,10,null)
-val a4 = new Aircraft(4,17,null)
-val a5 = new Aircraft(5,12,null)
+val a1 = Aircraft(1,1, Class1)
+val a2 = Aircraft(2,8, Class3)
+val a3 = Aircraft(3,10, Class2)
+val a4 = Aircraft(4,17, Class1)
+val a5 = Aircraft(5,12, Class1)
 
-val r1 = Runway(1, List())
-val r2 = Runway(2, List())
-val r3 = Runway(3, List())
+val r1 = Runway(1, List(Class1,Class2,Class5))
+val r2 = Runway(2, List(Class1, Class2))
+val r3 = Runway(3, List(Class2, Class3))
 
 var lst_aircrafts = Seq(a1,a2,a3,a4,a5)
-var lst_runways = Seq(r1,r2)
+var lst_runways = Seq(r1,r2,r3)
 
-val agenda = Agenda(10, lst_aircrafts, lst_runways).createSchedule(lst_aircrafts, List())
+val lst_test = List(1,2,4)
+lst_runways.filter((r => r.classes.contains(a1.classe)))
 
-//Testes
-val lstR = Seq(r1,r2)
-val lst = List(Schedule(Aircraft(1,1,null),1,Runway(1,List())), Schedule(Aircraft(2,8,null),8,Runway(2,List())), Schedule(Aircraft(3,10,null),11,Runway(1,List())))
-lst.groupBy(_.runway)
-  .map(r => r._2.max(Ordering.by((s:Schedule) => s.time)))
-  .min(Ordering.by((s:Schedule) => s.time))
-val freeRunways = lst.groupBy(_.runway).map(s=> s._1).toList.diff(lstR) ::: lstR.diff(lst.groupBy(_.runway).map(s=> s._1).toList).toList
-//bestRunwayMatch(lst,a4)
+val agenda = Agenda(1000, lst_aircrafts, lst_runways).createSchedule(lst_aircrafts, List())
