@@ -91,7 +91,14 @@ case class Agenda (maxDelayTime: Integer , aircraftList: Seq[Aircraft], runwayLi
     }
     else{
       val s = bestMatch.min(Ordering.by((s:Schedule) => s.time + Utils.getAircraftDelay(s.aircraft.classe, a.classe)))
-      new Schedule(a, s.time + Utils.getAircraftDelay(s.aircraft.classe, a.classe), s.runway)
+      if(s.time + Utils.getAircraftDelay(s.aircraft.classe, a.classe) < a.target)
+      {
+        new Schedule(a, a.target , s.runway)
+      }
+      else
+      {
+        new Schedule(a, s.time + Utils.getAircraftDelay(s.aircraft.classe, a.classe) , s.runway)
+      }
     }
   }
 
@@ -148,20 +155,20 @@ case class Agenda (maxDelayTime: Integer , aircraftList: Seq[Aircraft], runwayLi
   }
 }
 
-val a1 = Aircraft(1,1, Class1)
-val a2 = Aircraft(2,8, Class3)
-val a3 = Aircraft(3,10, Class2)
-val a4 = Aircraft(4,17, Class1)
-val a5 = Aircraft(5,12, Class1)
+val a1 = Aircraft(1,0, Class5)
+val a2 = Aircraft(2,13, Class2)
+val a3 = Aircraft(3,104, Class3)
+val a4 = Aircraft(4,139, Class1)
+val a5 = Aircraft(5,151, Class2)
 
-val r1 = Runway(1, List(Class1,Class2,Class5))
-val r2 = Runway(2, List(Class1, Class2))
+val r1 = Runway(1, List(Class1,Class2,Class3,Class4,Class5, Class6))
+val r2 = Runway(2, List(Class1, Class2, Class4, Class5))
 val r3 = Runway(3, List(Class2, Class3))
 
 var lst_aircrafts = Seq(a1,a2,a3,a4,a5)
-var lst_runways = Seq(r1,r2,r3)
+var lst_runways = Seq(r1,r2)
 
 val lst_test = List(1,2,4)
 lst_runways.filter((r => r.classes.contains(a1.classe)))
 
-val agenda = Agenda(1000, lst_aircrafts, lst_runways).createSchedule(lst_aircrafts, List())
+val agenda = Agenda(900, lst_aircrafts, lst_runways).createSchedule(lst_aircrafts, List())

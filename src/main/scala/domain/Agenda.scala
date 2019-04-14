@@ -19,7 +19,15 @@ case class Agenda (maxDelayTime: Integer , aircraftList: Seq[Aircraft], runwayLi
     }
     else{
       val s = bestMatch.min(Ordering.by((s:Schedule) => s.time + Utils.getAircraftDelay(s.aircraft.classe, a.classe)))
-      new Schedule(a, s.time + Utils.getAircraftDelay(s.aircraft.classe, a.classe), s.runway)
+
+      if(s.time + Utils.getAircraftDelay(s.aircraft.classe, a.classe) < a.target)
+      {
+        new Schedule(a, a.target , s.runway)
+      }
+      else
+      {
+        new Schedule(a, s.time + Utils.getAircraftDelay(s.aircraft.classe, a.classe) , s.runway)
+      }
     }
   }
 
