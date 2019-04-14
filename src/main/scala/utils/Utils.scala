@@ -1,5 +1,7 @@
 package utils
+
 import domain.{Class, Class1, Class2, Class3, Class4, Class5, Class6}
+
 object Utils {
 
   val textCleanupAndSplit : String => List[String] = textCleanupAndSplitPriv
@@ -12,7 +14,8 @@ object Utils {
       .split(" ").map(_.trim).toList
   }
 
-  // gets the aircraft delay
+  // Gets the delay time between operations according to
+  // the problem's "The Separation of Operations" table.
   private def getAircraftDelayPriv(leading: Class, trailing: Class) : Integer = {
     (leading, trailing) match {
       case (Class1, Class1) => 82

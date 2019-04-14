@@ -1,33 +1,18 @@
 package domain
 
-/*
-sealed trait Weight
-
-case object Small extends Weight
-case object Large extends Weight
-case object Heavy extends Weight
-
-sealed trait Operation
-
-case object TakeOff extends Operation
-case object Landing extends Operation
-
- trait ClassTrait {
-  val number: String
-  val operation: Operation
-  val weight: Weight
-}
-
-class Class(val number: String, val operation: Operation, val weight: Weight) extends ClassTrait
-*/
-
 sealed trait Class
 
+// Landing - Small
 case object Class1 extends Class
+// Landing - Large
 case object Class2 extends Class
+// Landing - Heavy
 case object Class3 extends Class
+// Take Off - Small
 case object Class4 extends Class
+// Take Off - Large
 case object Class5 extends Class
+// Take Off - Heavy
 case object Class6 extends Class
 
 
