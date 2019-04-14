@@ -142,4 +142,28 @@ class AgendaTest extends FunSuite {
     assert(aq == None)
   }
 
+  //problem here!
+  test("testInitialBiggerTargetSchedule") {
+    val aircrafts = Seq(
+      domain.Aircraft(1,50,domain.Class5),
+      domain.Aircraft(2,3,domain.Class1),
+      domain.Aircraft(3,30,domain.Class3),
+      domain.Aircraft(4,3,domain.Class1),
+      domain.Aircraft(5,60,domain.Class4),
+      domain.Aircraft(6,5,domain.Class5)
+    )
+
+    val runways = Seq(
+      domain.Runway(1, Seq(domain.Class5)),
+      domain.Runway(2, Seq(domain.Class1)),
+      domain.Runway(3, Seq(domain.Class5)),
+      domain.Runway(4, Seq(domain.Class3)),
+      domain.Runway(5, Seq(domain.Class5)),
+    )
+
+    val aq = Agenda(999, aircrafts, runways).schedule
+
+    assert(aq != None)
+  }
+
 }
