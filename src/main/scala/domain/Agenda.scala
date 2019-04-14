@@ -4,7 +4,7 @@ import utils.Utils
 case class Agenda (maxDelayTime: Integer , aircraftList: Seq[Aircraft], runwayList: Seq[Runway]) {
 
   val maximumDelayTime: Integer = maxDelayTime
-  val aircrafts: Seq[Aircraft] = aircraftList
+  val aircrafts: Seq[Aircraft] = aircraftList.sortBy(a => a.target)
   val runways: Seq[Runway] = runwayList
 
   def schedule: Option[Seq[Schedule]] = {
