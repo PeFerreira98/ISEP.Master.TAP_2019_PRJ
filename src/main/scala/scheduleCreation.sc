@@ -72,48 +72,67 @@ object Utils {
   }
 }
 
+
 case class Agenda (maxDelayTime: Integer , aircraftList: Seq[Aircraft], runwayList: Seq[Runway]) {
 
-  val maximumDelayTime = maxDelayTime
-  val aircrafts = aircraftList
-  val runways = runwayList
+  val maximumDelayTime: Integer = maxDelayTime
+  val aircrafts: Seq[Aircraft] = aircraftList.sortBy(a => a.target)
+  val runways: Seq[Runway] = runwayList
+
+  def schedule: Option[Seq[Schedule]] = {
+    createSchedule(aircrafts, List())
+  }
 
   private def getBestRunwayMatch(list : List[Schedule], a : Aircraft) : Schedule = {
-    val bestMatch =
-      list.groupBy(_.runway)
-        .filter(r => r._1.classes.contains(a.classe))
-        .map(r => r._2.max(Ordering.by((s:Schedule) => s.time)))
+    //Getting a list grouped by runways and for each runway will get the time of the last aircraft.
+    //This will be helpful to find what's was the latest flight for each runway
+    /*val bestMatch =
+    list.groupBy(_.runway)
+      .filter(r => r._1.classes.contains(a.classe))
+      .map(r => r._2.max(Ordering.by((s:Schedule) => s.time)))*/
 
-    //Check if isn't runways with aircraft class
-    if(bestMatch == null || bestMatch.size == 0)
+    //Complete Separation
+    //Getting a list grouped by runways and for each runway will get the correct available time for the aircraft @a
+    val bestMatch_v2 = list.groupBy(s => s.runway)
+      .filter(s => s._1.classes.contains(a.classe))
+      .map(e => e._2.max(Ordering.by((s :Schedule) => Utils.getAircraftDelay(s.aircraft.classe, a.classe) + s.time)))
+
+    //Checking if isn't runways that supports aircraft's class
+    if(bestMatch_v2 == null || bestMatch_v2.isEmpty)
     {
       null
     }
     else{
-      val s = bestMatch.min(Ordering.by((s:Schedule) => s.time + Utils.getAircraftDelay(s.aircraft.classe, a.classe)))
-      if(s.time + Utils.getAircraftDelay(s.aircraft.classe, a.classe) < a.target)
+      //It will find the best time of all latest runway's action, taking in consideration the delay for each one
+      //val s = bestMatch.min(Ordering.by((s:Schedule) => s.time + Utils.getAircraftDelay(s.aircraft.classe, a.classe)))
+      val s2 = bestMatch_v2.min(Ordering.by((s:Schedule) => s.time + Utils.getAircraftDelay(s.aircraft.classe, a.classe)))
+
+      if(s2.time + Utils.getAircraftDelay(s2.aircraft.classe, a.classe) < a.target)
       {
-        new Schedule(a, a.target , s.runway)
+        Schedule(a, a.target , s2.runway)
       }
       else
       {
-        new Schedule(a, s.time + Utils.getAircraftDelay(s.aircraft.classe, a.classe) , s.runway)
+        Schedule(a, s2.time + Utils.getAircraftDelay(s2.aircraft.classe, a.classe) , s2.runway)
       }
     }
   }
 
   private def getFreeSchedule(runways : Seq[Runway], list : List[Schedule],a : Aircraft) : Schedule = {
+    //List with runways that never had aircrafts. This helps to add schedules to runways that hadn't have been used since the operations are always with used runways
     val freeRunways =
       (list.groupBy(_.runway).map(s=> s._1).toList.diff(runways) ::: runways.diff(list.groupBy(_.runway).map(s=> s._1).toList).toList).filter(r => r.classes.contains(a.classe))
 
-    if(freeRunways.size == 0)
+    if(freeRunways.isEmpty)
     {
+      //Getting the best runway
       val res = getBestRunwayMatch(list, a)
 
       if(res == null){
-        println("--> ERROR - Doesn't exist none runways that support plane " + a.number + " class <--")
+        println("--> ERROR - Doesn't exist runways that support plane " + a.number + " class <--")
         null
       }
+      //Checking if the maximum delay time has been hitted
       else if(a.target + maximumDelayTime < res.time)
       {
         println("--> WARNING - Maximum delay time has been reached for plane " + a.number + " <--")
@@ -126,29 +145,40 @@ case class Agenda (maxDelayTime: Integer , aircraftList: Seq[Aircraft], runwayLi
     }
     else
     {
-      new Schedule(a, a.target, freeRunways.headOption.get)
+      //Adding a schedule with the first free runway since we know that exists free runways
+      Schedule(a, a.target, freeRunways.headOption.get)
     }
   }
 
-  def createSchedule(aircrafts: Seq[Aircraft], scheduleList: List[Schedule]) : Seq[Schedule] = {
+  /**
+    * Recursive method to create a schedule.
+    * @param aircrafts Aircraft's list.
+    * @param scheduleList It must be an empty list. This will be the final result
+    * @return Sequence of schedules or None if maximum delay has been hit or if isn't runways that supports one of aircraft's classes
+    */
+  private def createSchedule(aircrafts: Seq[Aircraft], scheduleList: List[Schedule]) : Option[Seq[Schedule]] = {
+    //Getting the aircraft or null if the list is empty
     val a = aircrafts.headOption.getOrElse(null)
 
+    //If can't get more aircrafts, it means it should stop because it hasn't more aircrafts to process
     if(a == null){
-      scheduleList
+      Option(scheduleList)
     }
     else
     {
+      //Create a list without the processed aircraft to get passed to the next recursive call
       val tail = aircrafts.tail
+      //Calculating schedule item
       val schedule_item = getFreeSchedule(runways, scheduleList,a)
 
-      if(schedule_item == null)
-      {
-        List()
-      }
+      //If it's null that means an error occurred
+      if(schedule_item == null) None
       else
       {
+        //We need to add the new element to the final list
         val lstAux : List[Schedule]= scheduleList ::: List(schedule_item)
 
+        //Recursive call
         createSchedule(tail,lstAux)
       }
     }
@@ -161,14 +191,17 @@ val a3 = Aircraft(3,104, Class3)
 val a4 = Aircraft(4,139, Class1)
 val a5 = Aircraft(5,151, Class2)
 
+//Test for Complete separation
+val aa1 = Aircraft(1,0, Class3)
+val aa2 = Aircraft(2,13, Class4)
+val aa3 = Aircraft(3,104, Class1)
+
 val r1 = Runway(1, List(Class1,Class2,Class3,Class4,Class5, Class6))
 val r2 = Runway(2, List(Class1, Class2, Class4, Class5))
 val r3 = Runway(3, List(Class2, Class3))
 
-var lst_aircrafts = Seq(a1,a2,a3,a4,a5)
-var lst_runways = Seq()
+var lst_aircrafts = Seq(aa1,aa2,aa3)
 
-val lst_test = List(1,2,4)
-//lst_runways.filter((r => r.classes.contains(a1.classe)))
+var lst_runways =  Seq(r1)
 
-val agenda = Agenda(900, lst_aircrafts, lst_runways).createSchedule(lst_aircrafts, List())
+val agenda = Agenda(900, lst_aircrafts, lst_runways).schedule

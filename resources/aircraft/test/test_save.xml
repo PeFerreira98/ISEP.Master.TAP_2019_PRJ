@@ -1,0 +1,4 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<schedule xsi:noNamespaceSchemaLocation="aircraftSchedule.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+            <aircraft number="1" time="0" runway="1"/><aircraft number="2" time="11" runway="1"/>
+        </schedule>
