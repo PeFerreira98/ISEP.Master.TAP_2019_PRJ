@@ -4,7 +4,7 @@
 
 # Target folders
 **/target/
-
+#**/resources/aircraft/test
 
 # Compiled class file
 *.class

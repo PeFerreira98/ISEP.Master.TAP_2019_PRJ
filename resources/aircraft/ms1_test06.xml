@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<agenda maximumDelayTime="900" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="agenda.xsd">
+    <!-- POS: Longer example  -->
+    <aircrafts>
+        <aircraft number="1" target="0" class="5"/>
+        <aircraft number="2" target="13" class="1"/>
+        <aircraft number="3" target="104" class="5"/>
+        <aircraft number="4" target="164" class="3"/>
+        <aircraft number="5" target="169" class="3"/>
+        <aircraft number="6" target="176" class="2"/>
+        <aircraft number="7" target="194" class="2"/>
+        <aircraft number="8" target="245" class="6"/>
+        <aircraft number="9" target="288" class="5"/>
+        <aircraft number="10" target="310" class="4"/>
+        <aircraft number="11" target="338" class="3"/>
+        <aircraft number="12" target="369" class="2"/>
+        <aircraft number="13" target="403" class="6"/>
+        <aircraft number="14" target="429" class="4"/>
+        <aircraft number="15" target="449" class="3"/>
+        <aircraft number="16" target="496" class="1"/>
+        <aircraft number="17" target="520" class="3"/>
+        <aircraft number="18" target="644" class="5"/>
+        <aircraft number="19" target="699" class="6"/>
+        <aircraft number="20" target="715" class="2"/>
+        <aircraft number="21" target="819" class="6"/>
+        <aircraft number="22" target="833" class="5"/>
+        <aircraft number="23" target="841" class="5"/>
+        <aircraft number="24" target="852" class="3"/>
+        <aircraft number="25" target="892" class="1"/>
+        <aircraft number="26" target="972" class="2"/>
+        <aircraft number="27" target="1044" class="4"/>
+        <aircraft number="28" target="1054" class="2"/>
+        <aircraft number="29" target="1091" class="6"/>
+        <aircraft number="30" target="1157" class="6"/>
+    </aircrafts>
+    <runways>
+        <runway number="1">
+            <class type="1"/>
+            <class type="2"/>
+            <class type="3"/>
+            <class type="4"/>
+            <class type="5"/>
+            <class type="6"/>
+        </runway>
+        <runway number="2">
+            <class type="1"/>
+            <class type="2"/>
+            <class type="4"/>
+            <class type="5"/>
+        </runway>
+    </runways>
+</agenda>

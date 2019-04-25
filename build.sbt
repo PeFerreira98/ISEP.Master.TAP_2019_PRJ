@@ -1,4 +1,4 @@
-name := "warmUp"
+name := "Project"
 
 version := "0.1"
 
@@ -18,5 +18,6 @@ libraryDependencies += "org.scalacheck" %% "scalacheck" % "1.14.0" % "test"
 addCompilerPlugin("org.wartremover" %% "wartremover" % "2.4.1")
 //wartremoverErrors ++= Warts.all
 //wartremoverWarnings ++= Warts.all
+wartremoverErrors ++= Seq(Wart.Enumeration,Wart.Return,Wart.Throw,Wart.Var,Wart.While)
 wartremoverWarnings ++= Warts.unsafe
 scalacOptions ++= Seq("-deprecation", "-Xlint")

@@ -35,6 +35,13 @@ val aircraftNodes = qwe \\ "agenda" \ "aircrafts" \ "aircraft"
 
 val runways = qwe\\ "agenda" \ "runways" \ "runway"
 
+aircraftNodes.map(node =>
+  if(node.\@("emergency").nonEmpty)
+    Some(node.\@("emergency").toInt)
+  else
+    None
+)
+
 val seq = Seq(1,2,3)
 
 <schedule> {
@@ -45,13 +52,14 @@ val seq = Seq(1,2,3)
   )}
 </schedule>
 
+/*
 XmlAirportIO.saveSchedule(Option(Seq(domain.Schedule(
   domain.Aircraft(1,0,domain.Class5),
   0,
   domain.Runway(1, Seq(domain.Class5)))
 )), "C:\\Users\\rmvieira\\Documents\\TAP\\1140953_1140956_1141233_2019_tap_ncf\\resources\\output.xml")
 
-/*
+
 runways.map(node =>
   Runway(node.\@("number").toInt,
     (node \ "class")

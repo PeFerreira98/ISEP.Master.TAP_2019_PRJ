@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<agenda maximumDelayTime="900" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="agenda.xsd">
+    <!-- POS: Each plane is scheduled to its class runway  -->
+    <aircrafts>
+        <aircraft number="1" target="0" class="5"/>
+        <aircraft number="2" target="5" class="3"/>
+        <aircraft number="3" target="10" class="2"/>
+        <aircraft number="4" target="15" class="1"/>
+        <aircraft number="5" target="20" class="2"/>
+    </aircrafts>
+    <runways>
+        <runway number="1">
+            <class type="1"/>
+        </runway>
+        <runway number="2">
+            <class type="2"/>
+        </runway>
+        <runway number="3">
+            <class type="3"/>
+        </runway>
+        <runway number="4">
+            <class type="4"/>
+        </runway>
+        <runway number="5">
+            <class type="5"/>
+        </runway>
+        <runway number="6">
+            <class type="6"/>
+        </runway>
+
+    </runways>
+</agenda>

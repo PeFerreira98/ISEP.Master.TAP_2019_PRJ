@@ -6,16 +6,26 @@ object Utils {
 
   val textCleanupAndSplit : String => List[String] = textCleanupAndSplitPriv
   val getAircraftDelay: (Class, Class) => Integer = getAircraftDelayPriv
+  val getDelayPenaltyCost: (Class, Integer) => Integer = getDelayPenaltyCostPriv
 
-  // cleans the text from special characters and splits it into a list of words
+  /**
+    * Cleans the text from special characters and splits it into a list of words
+    * @param text The text to be cleaned
+    * @return split text without special characters
+    */
   private def textCleanupAndSplitPriv(text: String) : List[String] = {
     text.replaceAll("[^a-zA-z_ ]", "")
       .replaceAll(" {2,}", " ")
       .split(" ").map(_.trim).toList
   }
 
-  // Gets the delay time between operations according to
-  // the problem's "The Separation of Operations" table.
+  /**
+    * Gets the minimum delay time that must occur between operations according to
+    * the problem's "The Separation of Operations" table.
+    * @param leading The leading aircraft's class
+    * @param trailing The trailing aircraft's class
+    * @return The minimum delay time between leading and trailing operations.
+    */
   private def getAircraftDelayPriv(leading: Class, trailing: Class) : Integer = {
     (leading, trailing) match {
       case (Class1, Class1) => 82
@@ -59,6 +69,28 @@ object Utils {
       case (Class6, Class4) => 120
       case (Class6, Class5) => 120
       case (Class6, Class6) => 90
+    }
+  }
+
+  /**
+    * Calculates the Penalty Cost according to the operation type and delay time
+    * @param operation The operation type
+    * @param delay The delay time
+    * @return The calculated penalty cost
+    */
+  private def getDelayPenaltyCostPriv(operation: Class, delay: Integer): Integer = {
+    delay match {
+      // only positive delays have penalty cost
+      case x if x > 0 =>
+        operation match {
+          case Class1 => delay * 2
+          case Class2 => delay * 2
+          case Class3 => delay * 2
+          case Class4 => delay // * 1
+          case Class5 => delay // * 1
+          case Class6 => delay // * 1
+        }
+      case _ => 0
     }
   }
 }

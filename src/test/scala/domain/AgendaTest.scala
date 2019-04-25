@@ -6,12 +6,12 @@ class AgendaTest extends FunSuite {
 
   test("testSchedule") {
     val aircrafts = Seq(
-      domain.Aircraft(1,0,domain.Class5),
-      domain.Aircraft(2,1,domain.Class5),
-      domain.Aircraft(3,2,domain.Class5),
-      domain.Aircraft(4,3,domain.Class5),
-      domain.Aircraft(5,4,domain.Class5),
-      domain.Aircraft(6,5,domain.Class5)
+      domain.Aircraft(1,0,domain.Class5, None),
+      domain.Aircraft(2,1,domain.Class5, None),
+      domain.Aircraft(3,2,domain.Class5, None),
+      domain.Aircraft(4,3,domain.Class5, None),
+      domain.Aircraft(5,4,domain.Class5, None),
+      domain.Aircraft(6,5,domain.Class5, None)
     )
 
     val runways = Seq(
@@ -29,12 +29,12 @@ class AgendaTest extends FunSuite {
 
   test("testAirplanesSameTimeSchedule") {
     val aircrafts = Seq(
-      domain.Aircraft(1,0,domain.Class5),
-      domain.Aircraft(2,0,domain.Class5),
-      domain.Aircraft(3,0,domain.Class5),
-      domain.Aircraft(4,0,domain.Class5),
-      domain.Aircraft(5,0,domain.Class5),
-      domain.Aircraft(6,0,domain.Class5)
+      domain.Aircraft(1,0,domain.Class5, None),
+      domain.Aircraft(2,0,domain.Class5, None),
+      domain.Aircraft(3,0,domain.Class5, None),
+      domain.Aircraft(4,0,domain.Class5, None),
+      domain.Aircraft(5,0,domain.Class5, None),
+      domain.Aircraft(6,0,domain.Class5, None)
     )
 
     val runways = Seq(
@@ -52,12 +52,12 @@ class AgendaTest extends FunSuite {
 
   test("testScheduleWithNoRunways") {
     val aircrafts = Seq(
-      domain.Aircraft(1,0,domain.Class5),
-      domain.Aircraft(2,0,domain.Class5),
-      domain.Aircraft(3,0,domain.Class5),
-      domain.Aircraft(4,0,domain.Class5),
-      domain.Aircraft(5,0,domain.Class5),
-      domain.Aircraft(6,0,domain.Class5)
+      domain.Aircraft(1,0,domain.Class5, None),
+      domain.Aircraft(2,0,domain.Class5, None),
+      domain.Aircraft(3,0,domain.Class5, None),
+      domain.Aircraft(4,0,domain.Class5, None),
+      domain.Aircraft(5,0,domain.Class5, None),
+      domain.Aircraft(6,0,domain.Class5, None)
     )
 
     val runways = Seq()
@@ -84,7 +84,7 @@ class AgendaTest extends FunSuite {
 
   test("testNoRunwayClassSchedule") {
     val aircrafts = Seq(
-      domain.Aircraft(1,0,domain.Class5),
+      domain.Aircraft(1,0,domain.Class5, None),
     )
 
     val runways = Seq(
@@ -110,12 +110,12 @@ class AgendaTest extends FunSuite {
 
   test("testLotOfDelaySchedule") {
     val aircrafts = Seq(
-      domain.Aircraft(1,0,domain.Class5),
-      domain.Aircraft(2,1,domain.Class5),
-      domain.Aircraft(3,2,domain.Class5),
-      domain.Aircraft(4,3,domain.Class5),
-      domain.Aircraft(5,4,domain.Class5),
-      domain.Aircraft(6,5,domain.Class5)
+      domain.Aircraft(1,0,domain.Class5, None),
+      domain.Aircraft(2,1,domain.Class5, None),
+      domain.Aircraft(3,2,domain.Class5, None),
+      domain.Aircraft(4,3,domain.Class5, None),
+      domain.Aircraft(5,4,domain.Class5, None),
+      domain.Aircraft(6,5,domain.Class5, None)
     )
 
     val runways = Seq(
@@ -129,8 +129,8 @@ class AgendaTest extends FunSuite {
 
   test("testNoDelaySchedule") {
     val aircrafts = Seq(
-      domain.Aircraft(1,0,domain.Class5),
-      domain.Aircraft(2,1,domain.Class5)
+      domain.Aircraft(1,0,domain.Class5, None),
+      domain.Aircraft(2,1,domain.Class5, None)
     )
 
     val runways = Seq(
@@ -144,12 +144,12 @@ class AgendaTest extends FunSuite {
 
   test("testInitialBiggerTargetSchedule") {
     val aircrafts = Seq(
-      domain.Aircraft(1,50,domain.Class5),
-      domain.Aircraft(2,90,domain.Class1),
-      domain.Aircraft(3,30,domain.Class3),
-      domain.Aircraft(4,3,domain.Class1),
-      domain.Aircraft(5,60,domain.Class5),
-      domain.Aircraft(6,5,domain.Class5)
+      domain.Aircraft(1,50,domain.Class5, None),
+      domain.Aircraft(2,90,domain.Class1, None),
+      domain.Aircraft(3,30,domain.Class3, None),
+      domain.Aircraft(4,3,domain.Class1, None),
+      domain.Aircraft(5,60,domain.Class5, None),
+      domain.Aircraft(6,5,domain.Class5, None)
     )
 
     val runways = Seq(
@@ -162,7 +162,7 @@ class AgendaTest extends FunSuite {
 
     val aq = Agenda(999, aircrafts, runways).schedule
 
-    assert(aq != None)
+    assert(aq.isDefined)
   }
 
 }

@@ -37,11 +37,14 @@ case class Agenda (maxDelayTime: Integer , aircraftList: Seq[Aircraft], runwayLi
 
       if(s2.time + Utils.getAircraftDelay(s2.aircraft.classe, a.classe) < a.target)
       {
-        Schedule(a, a.target , s2.runway)
+        // no penalty, everything on time
+        Schedule(a, a.target , s2.runway, 0)
       }
       else
       {
-        Schedule(a, s2.time + Utils.getAircraftDelay(s2.aircraft.classe, a.classe) , s2.runway)
+        // schedule with penalty
+        val time = s2.time + Utils.getAircraftDelay(s2.aircraft.classe, a.classe)
+        Schedule(a, time , s2.runway, Utils.getDelayPenaltyCost(a.classe, time - a.target))
       }
     }
   }
@@ -56,7 +59,8 @@ case class Agenda (maxDelayTime: Integer , aircraftList: Seq[Aircraft], runwayLi
       //Getting the best runway
       val res = getBestRunwayMatch(list, a)
 
-      if(res == null){
+      if(res == null)
+      {
         println("--> ERROR - Doesn't exist runways that support plane " + a.number + " class <--")
         null
       }
@@ -74,7 +78,7 @@ case class Agenda (maxDelayTime: Integer , aircraftList: Seq[Aircraft], runwayLi
     else
     {
       //Adding a schedule with the first free runway since we know that exists free runways
-      Schedule(a, a.target, freeRunways.headOption.get)
+      Schedule(a, a.target, freeRunways.headOption.get, 0)
     }
   }
 
@@ -94,10 +98,8 @@ case class Agenda (maxDelayTime: Integer , aircraftList: Seq[Aircraft], runwayLi
     }
     else
     {
-      //Create a list without the processed aircraft to get passed to the next recursive call
-      val tail = aircrafts.tail
       //Calculating schedule item
-      val schedule_item = getFreeSchedule(runways, scheduleList,a)
+      val schedule_item = getFreeSchedule(runways, scheduleList, a)
 
       //If it's null that means an error occurred
       if(schedule_item == null) None
@@ -106,8 +108,8 @@ case class Agenda (maxDelayTime: Integer , aircraftList: Seq[Aircraft], runwayLi
         //We need to add the new element to the final list
         val lstAux : List[Schedule]= scheduleList ::: List(schedule_item)
 
-        //Recursive call
-        createSchedule(tail,lstAux)
+        //Recursive call without the processed aircraft
+        createSchedule(aircrafts.tail, lstAux)
       }
     }
   }
