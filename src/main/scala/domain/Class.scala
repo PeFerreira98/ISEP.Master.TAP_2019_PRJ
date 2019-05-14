@@ -1,18 +1,38 @@
 package domain
 
+/**
+  * The aircraft's operation class.
+  */
 sealed trait Class
 
-// Landing - Small
+/**
+  * Landing - Small
+  */
 case object Class1 extends Class
-// Landing - Large
+
+/**
+  * Landing - Large
+  */
 case object Class2 extends Class
-// Landing - Heavy
+
+/**
+  * Landing - Heavy
+  */
 case object Class3 extends Class
-// Take Off - Small
+
+/**
+  * Take Off - Small
+  */
 case object Class4 extends Class
-// Take Off - Large
+
+/**
+  * Take Off - Large
+  */
 case object Class5 extends Class
-// Take Off - Heavy
+
+/**
+  * Take Off - Heavy
+  */
 case object Class6 extends Class
 
 

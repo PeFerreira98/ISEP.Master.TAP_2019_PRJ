@@ -25,12 +25,10 @@ object AgendaPropertyTest extends Properties("Agenda Schedule") {
       s.isDefined && s.get.isEmpty
     }
 
-  /*
   property("Test invalid Schedule no available runway") =
     forAll(genInvalidAgendaNoAvailableRunway) {
       _.schedule.isEmpty
     }
-  */
 
   property("Test invalid Schedule exceed max delay") =
     forAll(genInvalidAgendaExceedMaxDelay) {

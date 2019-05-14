@@ -82,13 +82,12 @@ object AircraftGenerators {
     runways <- gRunwayList(Seq(), 2)
   ) yield Agenda(maxDelay, Seq(), runways)
 
-  /*
+
   val genInvalidAgendaNoAvailableRunway : Gen[Agenda] = for (
     maxDelay <- Gen.choose(700,1000);
-    aircrafts <- gAircraftList(15);
-    runways <- gRunwayList(aircrafts, 0)
-  ) yield Agenda(maxDelay, aircrafts, runways)
-   */
+    aircrafts <- gAircraftList(15)
+  ) yield Agenda(maxDelay, aircrafts, Seq())
+
 
   val genInvalidAgendaExceedMaxDelay : Gen[Agenda] = for (
     // delay + 50 range of aircraft target smaller than the smallest operation delay (60)
