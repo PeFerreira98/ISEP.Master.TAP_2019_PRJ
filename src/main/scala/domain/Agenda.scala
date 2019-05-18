@@ -95,13 +95,13 @@ case class Agenda (maxDelayTime: Integer , aircraftList: Seq[Aircraft], runwayLi
           //If it's null that means an error occurred
           case null => None
           case scheduleItem =>
-            if (scheduleItem.aircraft.emergency.get > 0 && a.target + a.emergency.get < scheduleItem.time){
+            if (scheduleItem.aircraft.emergency.isDefined && a.target + a.emergency.get < scheduleItem.time) {
               val scheduleItem_toRemove = scheduleList.filter(s => s.runway.number == scheduleItem.runway.number).max(Ordering.by((ss : Schedule) => ss.time))
               val new_lst_aircrafts_tmp = lst_aircrafts_tmp.toList ::: List(scheduleItem_toRemove.aircraft)
               val lstAux = scheduleList.filter(s => (s.runway.number != scheduleItem_toRemove.runway.number && s.time != scheduleItem_toRemove.time) || (s.runway.number == scheduleItem_toRemove.runway.number && s.time != scheduleItem_toRemove.time))
               createSchedule(aircrafts, lstAux, new_lst_aircrafts_tmp)
             }
-            else{
+            else {
               //We need to add the new element to the final list
               val lstAux : List[Schedule]= scheduleList ::: List(scheduleItem)
               //Recursive call without the processed aircraft

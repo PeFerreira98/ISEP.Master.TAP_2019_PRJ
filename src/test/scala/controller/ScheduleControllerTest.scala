@@ -15,6 +15,7 @@ class ScheduleControllerTest extends FunSuite {
     val outputFilePath = outputFolder + "schedule_test1.xml"
 
     processSchedule(inputFilePath, outputFilePath)
+    assert(Files.exists(Paths.get(outputFilePath)))
   }
 
   test("testEmptyInputProcessSchedule") {

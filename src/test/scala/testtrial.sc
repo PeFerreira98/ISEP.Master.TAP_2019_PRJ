@@ -1,4 +1,3 @@
-import domain.Entry
 import org.scalacheck.Gen
 import org.scalacheck.Prop.forAll
 

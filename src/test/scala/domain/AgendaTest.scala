@@ -22,9 +22,10 @@ class AgendaTest extends FunSuite {
       domain.Runway(5, Seq(domain.Class5)),
     )
 
-    val aq = Agenda(100, aircrafts, runways).schedule
+    val aq = Agenda(200, aircrafts, runways).schedule
 
-    assert(aq != None)
+    assert(aq.isDefined)
+    assert(aq.get.last.penalty > 0)
   }
 
   test("testAirplanesSameTimeSchedule") {
@@ -47,7 +48,7 @@ class AgendaTest extends FunSuite {
 
     val aq = Agenda(10, aircrafts, runways).schedule
 
-    assert(aq == None)
+    assert(aq.isEmpty)
   }
 
   test("testScheduleWithNoRunways") {
@@ -63,7 +64,7 @@ class AgendaTest extends FunSuite {
     val runways = Seq()
 
     val aq = Agenda(10, aircrafts, runways).schedule
-    assert(aq == None)
+    assert(aq.isEmpty)
   }
 
   test("testNoAircraftSchedule") {
@@ -79,7 +80,7 @@ class AgendaTest extends FunSuite {
 
     val aq = Agenda(10, aircrafts, runways).schedule
 
-    assert(aq == Some(List()))
+    assert(aq === Some(List()))
   }
 
   test("testNoRunwayClassSchedule") {
@@ -95,7 +96,7 @@ class AgendaTest extends FunSuite {
 
     val aq = Agenda(10, aircrafts, runways).schedule
 
-    assert(aq == None)
+    assert(aq.isEmpty)
   }
 
   test("testNoRunwayAndAircraftClassSchedule") {
@@ -105,7 +106,7 @@ class AgendaTest extends FunSuite {
 
     val aq = Agenda(10, aircrafts, runways).schedule
 
-    assert(aq == Some(List()))
+    assert(aq === Some(List()))
   }
 
   test("testLotOfDelaySchedule") {
@@ -124,7 +125,7 @@ class AgendaTest extends FunSuite {
 
     val aq = Agenda(9999, aircrafts, runways).schedule
 
-    assert(aq != None)
+    assert(aq.isDefined)
   }
 
   test("testNoDelaySchedule") {
@@ -139,7 +140,7 @@ class AgendaTest extends FunSuite {
 
     val aq = Agenda(0, aircrafts, runways).schedule
 
-    assert(aq == None)
+    assert(aq.isEmpty)
   }
 
   test("testInitialBiggerTargetSchedule") {

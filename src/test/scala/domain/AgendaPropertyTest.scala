@@ -34,4 +34,17 @@ object AgendaPropertyTest extends Properties("Agenda Schedule") {
     forAll(genInvalidAgendaExceedMaxDelay) {
       _.schedule.isEmpty
     }
+
+  property("Test Schedule with emergency") =
+    forAll(genValidAgendaEmergency) {
+      agenda => agenda match {
+        // runways available for all kinds of aircrafts
+        case _: Agenda
+          if agenda.aircrafts.map(_.classe).distinct.intersect(agenda.runways.flatMap(_.classes).distinct).size
+            == agenda.aircrafts.map(_.classe).distinct.size
+        => val s = agenda.schedule; s.isDefined && s.get.nonEmpty
+        // runways unavailable for some kinds of aircrafts
+        case _: Agenda => agenda.schedule.isEmpty
+      }
+    }
 }
