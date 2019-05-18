@@ -110,10 +110,10 @@ object XmlAirportIO {
         val xmlContent =
           <schedule xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="aircraftSchedule.xsd">
             { schedule.map(s =>
-            <aircraft />% {Attribute(None, "runway", Text(s.runway.number.toString), Null)}
+            <aircraft />% {Attribute(None, "penalty", Text(s.penalty.toString), Null)}
+            % {Attribute(None, "runway", Text(s.runway.number.toString), Null)}
             % {Attribute(None, "time", Text(s.time.toString), Null)}
             % {Attribute(None, "number", Text(s.aircraft.number.toString), Null)}
-            % {Attribute(None, "penalty", Text(s.penalty.toString), Null)}
           )}
         </schedule>
         XML.save(filePath, xmlContent, "UTF-8", true)

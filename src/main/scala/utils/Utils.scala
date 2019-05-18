@@ -31,44 +31,23 @@ object Utils {
       case (Class1, Class1) => 82
       case (Class1, Class2) => 69
       case (Class1, Class3) => 60
-      case (Class1, Class4) => 75
-      case (Class1, Class5) => 75
-      case (Class1, Class6) => 75
+      case (Class1, _) => 75
 
       case (Class2, Class1) => 131
       case (Class2, Class2) => 69
       case (Class2, Class3) => 60
-      case (Class2, Class4) => 75
-      case (Class2, Class5) => 75
-      case (Class2, Class6) => 75
+      case (Class2, _) => 75
 
       case (Class3, Class1) => 196
       case (Class3, Class2) => 157
       case (Class3, Class3) => 96
-      case (Class3, Class4) => 75
-      case (Class3, Class5) => 75
-      case (Class3, Class6) => 75
+      case (Class3, _) => 75
 
-      case (Class4, Class1) => 60
-      case (Class4, Class2) => 60
-      case (Class4, Class3) => 60
-      case (Class4, Class4) => 60
-      case (Class4, Class5) => 60
-      case (Class4, Class6) => 60
-
-      case (Class5, Class1) => 60
-      case (Class5, Class2) => 60
-      case (Class5, Class3) => 60
-      case (Class5, Class4) => 60
-      case (Class5, Class5) => 60
-      case (Class5, Class6) => 60
-
-      case (Class6, Class1) => 60
-      case (Class6, Class2) => 60
-      case (Class6, Class3) => 60
       case (Class6, Class4) => 120
       case (Class6, Class5) => 120
       case (Class6, Class6) => 90
+      case (_, _) => 60
+
     }
   }
 
@@ -81,14 +60,12 @@ object Utils {
   private def getDelayPenaltyCostPriv(operation: Class, delay: Integer): Integer = {
     delay match {
       // only positive delays have penalty cost
-      case x if x > 0 =>
+      case penalty if penalty > 0 =>
         operation match {
-          case Class1 => delay * 2
-          case Class2 => delay * 2
-          case Class3 => delay * 2
-          case Class4 => delay // * 1
-          case Class5 => delay // * 1
-          case Class6 => delay // * 1
+          // Landings 2 units/delay time
+          case Class1 | Class2 | Class3 => penalty * 2
+          // Take-offs 1 units/delay time
+          case Class4 | Class5 | Class6 => penalty
         }
       case _ => 0
     }

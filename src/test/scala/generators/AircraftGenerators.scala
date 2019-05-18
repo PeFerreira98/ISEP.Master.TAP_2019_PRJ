@@ -44,6 +44,9 @@ object AircraftGenerators {
     Gen.sequence[Seq[Runway], Runway]((0 until n).map(id => gRunway(id, la)))
   )
 
+  /**
+    * Generator for generating an emergency value
+    */
   val gEmergency : Gen[Integer] = for (
     x <- Gen.choose(0,15)
   ) yield x
@@ -73,26 +76,37 @@ object AircraftGenerators {
     */
   val genValidAgenda : Gen[Agenda] = for (
     maxDelay <- Gen.choose(700,1000);
-    aircrafts <- gAircraftList(6);
+    aircrafts <- gAircraftList(50);
     runways <- gRunwayList(aircrafts, 0)
   ) yield Agenda(maxDelay, aircrafts, runways)
 
+  /**
+    * Generator for generating a single agenda without aircrafts
+    */
   val genValidAgendaEmptyAircraft : Gen[Agenda] = for (
     maxDelay <- Gen.choose(700, 1000);
-    runways <- gRunwayList(Seq(), 2)
+    runways <- gRunwayList(Seq(), 5)
   ) yield Agenda(maxDelay, Seq(), runways)
 
 
+  /**
+    * Generator for generating a single agenda with
+    * at least an aircraft with no matching runway
+    */
   val genInvalidAgendaNoAvailableRunway : Gen[Agenda] = for (
     maxDelay <- Gen.choose(700,1000);
-    aircrafts <- gAircraftList(15)
+    aircrafts <- gAircraftList(50)
   ) yield Agenda(maxDelay, aircrafts, Seq())
 
 
+  /**
+    * Generator for generating a single agenda with less
+    * runways than aicrafts so that delay will always be exceeded
+    */
   val genInvalidAgendaExceedMaxDelay : Gen[Agenda] = for (
     // delay + 50 range of aircraft target smaller than the smallest operation delay (60)
     maxDelay <- Gen.choose(1,5);
-    aircrafts <- gAircraftList(10);
+    aircrafts <- gAircraftList(50);
     // less runways than aircrafts to ensure the maximum delay will be exceeded
     runways <- gRunwayList(aircrafts, -1)
   ) yield Agenda(maxDelay, aircrafts, runways)

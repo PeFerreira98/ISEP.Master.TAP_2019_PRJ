@@ -31,20 +31,17 @@ class XmlAirportIOTest extends FunSuite {
     val inputFilePath = resourcesFolder + "agenda_invalid.xml"
     val agenda = loadAgenda(inputFilePath)
 
-    assert(agenda == None)
+    assert(agenda.isEmpty)
   }
 
   test("Test XML Loading Empty schema") {
     val inputFilePath = resourcesFolder + "agenda_empty.xml"
     val agenda = loadAgenda(inputFilePath)
 
-    assert(agenda == None)
+    assert(agenda.isEmpty)
   }
 
   test("Test XML Loading MS1") {
-    val inputFilePath = resourcesFolder + "agenda_empty.xml"
-    val agenda = loadAgenda(inputFilePath)
-
     val files = List( resourcesFolder + "ms1_test01.xml",
       resourcesFolder + "ms1_test02.xml",
       resourcesFolder + "ms1_test03.xml",
@@ -52,7 +49,7 @@ class XmlAirportIOTest extends FunSuite {
       resourcesFolder + "ms1_test05.xml",
       resourcesFolder + "ms1_test06.xml")
 
-    files.foreach(file => assert(loadAgenda(file) != None))
+    files.foreach(file => assert(loadAgenda(file).isDefined))
   }
 
   // XML Save

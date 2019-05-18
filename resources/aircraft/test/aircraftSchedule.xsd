@@ -12,6 +12,7 @@
         <xs:attribute type="xs:positiveInteger" name="number"/>
         <xs:attribute type="xs:nonNegativeInteger" name="time"/>
         <xs:attribute type="xs:positiveInteger" name="runway"/>
+        <xs:attribute type="xs:nonNegativeInteger" name="penalty"/>
       </xs:extension>
     </xs:simpleContent>
   </xs:complexType>
