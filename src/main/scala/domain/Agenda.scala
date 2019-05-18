@@ -7,6 +7,7 @@ import utils.Utils
   * @param aircraftList The list of aircrafts to be scheduled.
   * @param runwayList The list of available runways.
   */
+
 case class Agenda (maxDelayTime: Integer , aircraftList: Seq[Aircraft], runwayList: Seq[Runway]) {
 
   val maximumDelayTime: Integer = maxDelayTime
@@ -18,7 +19,7 @@ case class Agenda (maxDelayTime: Integer , aircraftList: Seq[Aircraft], runwayLi
     * @return [Optional] list of schedules.
     */
   def schedule: Option[Seq[Schedule]] = {
-    createSchedule(aircrafts, List())
+    createSchedule(aircrafts, List(), List())
   }
 
   private def getBestRunwayMatch(list : List[Schedule], a : Aircraft) : Schedule = {
@@ -83,7 +84,7 @@ case class Agenda (maxDelayTime: Integer , aircraftList: Seq[Aircraft], runwayLi
     * @param scheduleList It must be an empty list when starting as this will be the final result.
     * @return Sequence of schedules or None if maximum delay has been hit or if isn't runways that supports one of aircraft's classes
     */
-  private def createSchedule(aircrafts: Seq[Aircraft], scheduleList: List[Schedule]) : Option[Seq[Schedule]] = {
+  private def createSchedule(aircrafts: Seq[Aircraft], scheduleList: List[Schedule], lst_aircrafts_tmp : Seq[Aircraft]) : Option[Seq[Schedule]] = {
     //Getting the aircraft or null if the list is empty
     aircrafts.headOption.orNull match {
       //If can't get more aircrafts, it means it should stop because it hasn't more aircrafts to process
@@ -91,14 +92,24 @@ case class Agenda (maxDelayTime: Integer , aircraftList: Seq[Aircraft], runwayLi
       case a: Aircraft =>
         //Calculating schedule item
         getFreeSchedule(runways, scheduleList, a) match {
-        //If it's null that means an error occurred
-        case null => None
-        case scheduleItem =>
-          //We need to add the new element to the final list
-          val lstAux : List[Schedule]= scheduleList ::: List(scheduleItem)
-          //Recursive call without the processed aircraft
-          createSchedule(aircrafts.tail, lstAux)
-      }
+          //If it's null that means an error occurred
+          case null => None
+          case scheduleItem =>
+            if (scheduleItem.aircraft.emergency.get > 0 && a.target + a.emergency.get < scheduleItem.time){
+              val scheduleItem_toRemove = scheduleList.filter(s => s.runway.number == scheduleItem.runway.number).max(Ordering.by((ss : Schedule) => ss.time))
+              val new_lst_aircrafts_tmp = lst_aircrafts_tmp.toList ::: List(scheduleItem_toRemove.aircraft)
+              val lstAux = scheduleList.filter(s => (s.runway.number != scheduleItem_toRemove.runway.number && s.time != scheduleItem_toRemove.time) || (s.runway.number == scheduleItem_toRemove.runway.number && s.time != scheduleItem_toRemove.time))
+              createSchedule(aircrafts, lstAux, new_lst_aircrafts_tmp)
+            }
+            else{
+              //We need to add the new element to the final list
+              val lstAux : List[Schedule]= scheduleList ::: List(scheduleItem)
+              //Recursive call without the processed aircraft
+              val new_aircrafts = aircrafts.filter(a2 => a2.number != a.number).toList ::: lst_aircrafts_tmp.toList
+              new_aircrafts.sortBy(a => a.target)
+              createSchedule(new_aircrafts, lstAux, List())
+            }
+        }
     }
   }
 }
