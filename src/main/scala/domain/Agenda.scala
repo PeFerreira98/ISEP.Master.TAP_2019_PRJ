@@ -66,7 +66,9 @@ case class Agenda (maxDelayTime: Integer , aircraftList: Seq[Aircraft], runwayLi
         case null =>
           println("--> ERROR - Doesn't exist runways that support plane " + a.number + " class <--")
           null
-        case res if a.target + maximumDelayTime < res.time =>
+        //We don't want to check maximumDelay since if it is an emergency aircraft and can't land on time, since this planes can be swapped
+        case res if (a.target + maximumDelayTime < res.time && !a.emergency.isDefined
+          || (a.target + maximumDelayTime < res.time && a.emergency.isDefined && res.time <= a.emergency.get + a.target)) =>
           println("--> WARNING - Maximum delay time has been reached for plane " + a.number + " <--")
           null
         case res => res
@@ -96,10 +98,23 @@ case class Agenda (maxDelayTime: Integer , aircraftList: Seq[Aircraft], runwayLi
           case null => None
           case scheduleItem =>
             if (scheduleItem.aircraft.emergency.isDefined && a.target + a.emergency.get < scheduleItem.time) {
-              val scheduleItem_toRemove = scheduleList.filter(s => s.runway.number == scheduleItem.runway.number).max(Ordering.by((ss : Schedule) => ss.time))
-              val new_lst_aircrafts_tmp = lst_aircrafts_tmp.toList ::: List(scheduleItem_toRemove.aircraft)
-              val lstAux = scheduleList.filter(s => (s.runway.number != scheduleItem_toRemove.runway.number && s.time != scheduleItem_toRemove.time) || (s.runway.number == scheduleItem_toRemove.runway.number && s.time != scheduleItem_toRemove.time))
-              createSchedule(aircrafts, lstAux, new_lst_aircrafts_tmp)
+              //Getting the last schedule of each runway
+              //Since we don't want to remove the aircrafts that landed with emergency, it is necessary to remove them from the search
+              val lst_Available_schedules =
+              scheduleList.groupBy(_.runway)
+                .map(e => e._2.max(Ordering.by((s: Schedule) =>s.time)))
+                .filter(s => !s.aircraft.emergency.isDefined)
+
+              lst_Available_schedules.toList.length match {
+                case 0 =>
+                  println("Impossible to find a solution")
+                  None
+                case x if x > 0 =>
+                  val scheduleItem_toRemove = lst_Available_schedules.max(Ordering.by((ss : Schedule) => ss.time))
+                  val new_lst_aircrafts_tmp = lst_aircrafts_tmp.toList ::: List(scheduleItem_toRemove.aircraft)
+                  val lstAux = scheduleList.filter(s => (s.runway.number != scheduleItem_toRemove.runway.number && s.time != scheduleItem_toRemove.time) || (s.runway.number == scheduleItem_toRemove.runway.number && s.time != scheduleItem_toRemove.time))
+                  createSchedule(aircrafts, lstAux, new_lst_aircrafts_tmp)
+              }
             }
             else {
               //We need to add the new element to the final list
