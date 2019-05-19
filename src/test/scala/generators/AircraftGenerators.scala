@@ -97,7 +97,6 @@ object AircraftGenerators {
     aircrafts <- gAircraftList(50, false)
   ) yield Agenda(maxDelay, aircrafts, Seq())
 
-
   /**
     * Generator for generating a single agenda with less
     * runways than aicrafts so that delay will always be exceeded
