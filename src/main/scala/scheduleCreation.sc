@@ -142,8 +142,8 @@ case class Agenda (maxDelayTime: Integer , aircraftList: Seq[Aircraft], runwayLi
           println("--> ERROR - Doesn't exist runways that support plane " + a.number + " class <--")
           null
           //We don't want to check maximumDelay since if it is an emergency aircraft and can't land on time, since this planes can be swapped
-        case res if (a.target + maximumDelayTime < res.time && !a.emergency.isDefined
-          || (a.target + maximumDelayTime < res.time && a.emergency.isDefined && res.time <= a.emergency.get + a.target)) =>
+        case res if (a.target + maximumDelayTime < res.time && a.emergency.isEmpty)
+          || (a.target + maximumDelayTime < res.time && a.emergency.isDefined && res.time <= a.emergency.get + a.target) =>
           println("--> WARNING - Maximum delay time has been reached for plane " + a.number + " <--")
           null
         case res => res
